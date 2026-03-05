@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: koujibashosho-api
+    runtime: python
+    region: singapore          # 日本に最も近いリージョン
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: ALLOWED_ORIGINS
+        # デプロイ後にXserverのドメインに変更する（Renderダッシュボードで設定）
+        # 例: https://yourdomain.xsrv.jp,https://www.yourdomain.com
+        value: https://your-xserver-domain.xsrv.jp
+      - key: PYTHON_VERSION
+        value: "3.11.0"
+    disk:
+      name: sqlite-data
+      mountPath: /opt/render/project/src/backend
+      sizeGB: 1
