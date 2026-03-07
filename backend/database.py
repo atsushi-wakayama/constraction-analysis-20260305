@@ -2,7 +2,6 @@ from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
-from pathlib import Path
 
 DATABASE_URL = "sqlite:///./construction_budget.db"
 
@@ -46,24 +45,6 @@ def _add_column_if_missing(conn, table: str, col: str, col_def: str):
         pass  # 既に存在する場合は無視
 
 
-def _load_seed(conn):
-    """DBが空の場合のみ seed.sql を読み込む"""
-    count = conn.execute(text("SELECT COUNT(*) FROM construction_items")).scalar()
-    if count and count > 0:
-        return  # データが既にあれば何もしない
-
-    seed_path = Path(__file__).parent / "seed.sql"
-    if not seed_path.exists():
-        return
-
-    # SQLAlchemy コネクションの下層にある sqlite3 コネクションを使って executescript を実行
-    sql = seed_path.read_text(encoding="utf-8")
-    raw_conn = conn.connection.dbapi_connection
-    raw_conn.executescript(sql)
-    total = conn.execute(text("SELECT COUNT(*) FROM construction_items")).scalar()
-    print(f"[seed] {total}件のシードデータをロードしました")
-
-
 def init_db():
     Base.metadata.create_all(bind=engine)
     # 既存DBへの列追加（マイグレーション）
@@ -71,5 +52,3 @@ def init_db():
         _add_column_if_missing(conn, "construction_items", "session",      "VARCHAR(20)")
         _add_column_if_missing(conn, "construction_items", "work_overview", "TEXT")
         _add_column_if_missing(conn, "construction_items", "department",   "VARCHAR(200)")
-        # DBが空ならシードデータをロード
-        _load_seed(conn)
