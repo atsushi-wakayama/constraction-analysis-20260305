@@ -2,10 +2,22 @@ from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
+import os
 
-DATABASE_URL = "sqlite:///./construction_budget.db"
+# 本番 (Render): DATABASE_URL 環境変数に PostgreSQL URL が入る
+# 開発: ローカルの SQLite を使用
+_db_url = os.environ.get("DATABASE_URL", "sqlite:///./construction_budget.db")
+# Render の PostgreSQL URL は "postgres://" で始まる場合があるので修正
+if _db_url.startswith("postgres://"):
+    _db_url = _db_url.replace("postgres://", "postgresql://", 1)
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+DATABASE_URL = _db_url
+_is_sqlite = DATABASE_URL.startswith("sqlite")
+
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"check_same_thread": False} if _is_sqlite else {},
+)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
