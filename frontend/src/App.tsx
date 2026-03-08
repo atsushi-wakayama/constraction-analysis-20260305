@@ -3,6 +3,7 @@ import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Comparison from "./pages/Comparison";
 import ItemList from "./pages/ItemList";
+import Admin from "./pages/Admin";
 import { api } from "./api/client";
 
 const NAV_ITEMS = [
@@ -85,6 +86,15 @@ export default function App() {
                 years={years}
                 selectedYear={selectedYear}
                 onYearChange={setSelectedYear}
+              />
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <Admin
+                years={years}
+                onDataChange={loadYears}
               />
             }
           />
