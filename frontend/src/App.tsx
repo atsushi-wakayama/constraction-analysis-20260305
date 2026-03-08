@@ -1,18 +1,14 @@
 import { useEffect, useState, useCallback } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
-import Upload from "./pages/Upload";
 import Comparison from "./pages/Comparison";
 import ItemList from "./pages/ItemList";
-import DataManage from "./pages/DataManage";
 import { api } from "./api/client";
 
 const NAV_ITEMS = [
   { path: "/", label: "ダッシュボード", icon: "📊" },
-  { path: "/upload", label: "データ取込", icon: "📤" },
   { path: "/comparison", label: "年度比較", icon: "📈" },
   { path: "/items", label: "工事箇所一覧", icon: "📋" },
-  { path: "/manage", label: "データ管理", icon: "⚙️" },
 ];
 
 export default function App() {
@@ -81,10 +77,6 @@ export default function App() {
               />
             }
           />
-          <Route
-            path="/upload"
-            element={<Upload onUploadSuccess={loadYears} />}
-          />
           <Route path="/comparison" element={<Comparison />} />
           <Route
             path="/items"
@@ -94,12 +86,6 @@ export default function App() {
                 selectedYear={selectedYear}
                 onYearChange={setSelectedYear}
               />
-            }
-          />
-          <Route
-            path="/manage"
-            element={
-              <DataManage years={years} onDataChange={loadYears} />
             }
           />
         </Routes>
