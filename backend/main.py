@@ -5,7 +5,6 @@ import os
 import json
 import shutil
 import tempfile
-from pathlib import Path
 from typing import List, Optional, Dict, Any
 
 from fastapi import FastAPI, UploadFile, File, HTTPException, Depends, Query, Form
@@ -36,9 +35,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-UPLOAD_DIR = Path("uploads")
-UPLOAD_DIR.mkdir(exist_ok=True)
 
 
 @app.on_event("startup")
@@ -132,10 +128,8 @@ async def upload_pdf(
                 detail="年度を検出できませんでした。年度を手動で指定してください。",
             )
 
-        # アップロードファイルを永続化
+        # ファイル名だけ記録（PDFは保存しない：Renderのエフェメラルストレージを消費しないため）
         saved_filename = f"{detected_year}_{file.filename}"
-        saved_path = UPLOAD_DIR / saved_filename
-        shutil.copy(tmp_path, saved_path)
 
         # DBに登録（重複チェック: 同じ年度・ソースファイルは上書き）
         existing = (
