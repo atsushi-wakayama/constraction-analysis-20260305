@@ -189,56 +189,52 @@
     .hero-bg {
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, #0D2E47 0%, #1A5276 50%, #2E7D5A 100%);
     }
-    /* 背景パターン */
-    .hero-bg::before {
+    /* フォトモザイクグリッド */
+    .hero-photo-grid {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 3px;
+    }
+    .hero-photo-grid::after {
       content: '';
       position: absolute;
       inset: 0;
-      background-image:
-        radial-gradient(circle at 20% 50%, rgba(244,123,63,0.25) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(90,175,122,0.2) 0%, transparent 40%),
-        radial-gradient(circle at 60% 80%, rgba(232,184,64,0.15) 0%, transparent 35%);
+      background:
+        radial-gradient(ellipse 70% 60% at 50% 45%, rgba(13, 46, 71, 0.52) 0%, transparent 100%),
+        linear-gradient(180deg, rgba(13, 46, 71, 0.18) 0%, rgba(26, 82, 118, 0.32) 45%, rgba(13, 46, 71, 0.50) 100%);
+      z-index: 1;
     }
-    /* 浮遊する円 */
-    .hero-orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(60px);
-      animation: float-orb 8s ease-in-out infinite;
+    .hero-photo {
+      overflow: hidden;
+      position: relative;
+      background: #1A5276;
     }
-    .hero-orb-1 {
-      width: 500px; height: 500px;
-      background: rgba(244,123,63,0.18);
-      top: -100px; right: -100px;
-      animation-delay: 0s;
+    .hero-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
-    .hero-orb-2 {
-      width: 350px; height: 350px;
-      background: rgba(58,138,92,0.2);
-      bottom: -80px; left: 10%;
-      animation-delay: -3s;
+    .hero-photo:nth-child(odd) img {
+      animation: photo-ken-burns-1 25s ease-in-out infinite alternate;
     }
-    .hero-orb-3 {
-      width: 250px; height: 250px;
-      background: rgba(232,184,64,0.15);
-      top: 30%; left: 40%;
-      animation-delay: -5s;
+    .hero-photo:nth-child(even) img {
+      animation: photo-ken-burns-2 30s ease-in-out infinite alternate;
     }
-    @keyframes float-orb {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      33% { transform: translate(20px, -30px) scale(1.05); }
-      66% { transform: translate(-15px, 20px) scale(0.95); }
+    @keyframes photo-ken-burns-1 {
+      from { transform: scale(1) translate(0, 0); }
+      to   { transform: scale(1.12) translate(-2%, -1%); }
     }
-    /* グリッドライン */
-    .hero-grid {
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-      background-size: 60px 60px;
+    @keyframes photo-ken-burns-2 {
+      from { transform: scale(1.12) translate(1%, 1%); }
+      to   { transform: scale(1) translate(0, 0); }
+    }
+    .hero-photo--wide {
+      grid-column: span 2;
     }
     .hero-content {
       position: relative;
@@ -615,64 +611,6 @@
     }
     .link-more:hover { gap: 10px; }
 
-    /* ===== ABOUT STRIP ===== */
-    .about-strip {
-      background: var(--gray-l);
-      padding: 80px 0;
-    }
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: center;
-    }
-    .about-visual {
-      position: relative;
-    }
-    .about-img-wrap {
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      aspect-ratio: 4/3;
-      background: linear-gradient(135deg, var(--navy), var(--green));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .about-img-placeholder {
-      text-align: center;
-      color: rgba(255,255,255,0.6);
-    }
-    .about-img-placeholder .icon { font-size: 80px; margin-bottom: 16px; }
-    .about-img-placeholder p { font-size: 14px; }
-    .about-badge {
-      position: absolute;
-      bottom: -20px;
-      right: -20px;
-      width: 110px; height: 110px;
-      background: linear-gradient(135deg, var(--orange), var(--gold));
-      border-radius: 50%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      box-shadow: 0 12px 32px rgba(244,123,63,0.4);
-      animation: spin-slow 12s linear infinite;
-      border: 4px solid white;
-    }
-    .about-badge-num {
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 900;
-      font-size: 30px;
-      line-height: 1;
-    }
-    .about-badge-label { font-size: 10px; font-weight: 700; }
-    @keyframes spin-slow {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
     /* ===== CATEGORIES ===== */
     .categories { background: white; }
     .cat-grid {
@@ -681,11 +619,11 @@
       gap: 16px;
     }
     .cat-card {
-      border-radius: 16px;
-      padding: 28px 20px;
+      border-radius: 12px;
+      padding: 16px 20px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 6px;
       cursor: pointer;
       transition: all 0.3s ease;
       position: relative;
@@ -721,13 +659,12 @@
     .cat-card-8:hover { border-color: #C48B1A; }
 
     .cat-icon {
-      font-size: 36px;
-      transition: transform 0.3s;
+      display: none;
     }
-    .cat-card:hover .cat-icon { transform: scale(1.2) rotate(-5deg); }
     .cat-name {
-      font-size: 14px;
-      font-weight: 700;
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 0.02em;
     }
     .cat-count {
       font-size: 12px;
@@ -968,6 +905,36 @@
       transform: translateX(4px);
     }
 
+    /* ===== FUNBASE ABOUT (small) ===== */
+    .funbase-about {
+      background: var(--gray-l);
+      padding: 64px 0;
+    }
+    .funbase-about-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .funbase-about-title {
+      font-size: 20px;
+      font-weight: 900;
+      margin-bottom: 24px;
+      color: var(--navy);
+    }
+    .funbase-about-svg {
+      max-width: 600px;
+      margin: 0 auto 24px;
+    }
+    .funbase-about-svg img {
+      width: 100%;
+      height: auto;
+    }
+    .funbase-about-desc {
+      font-size: 14px;
+      line-height: 1.9;
+      color: var(--text-m);
+    }
+
     /* ===== CTA BANNER ===== */
     .cta-section {
       background: white;
@@ -1152,12 +1119,13 @@
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 1024px) {
-      .about-grid { grid-template-columns: 1fr; gap: 48px; }
       .cat-grid { grid-template-columns: repeat(2, 1fr); }
       .project-grid { grid-template-columns: repeat(2, 1fr); }
       .cta-grid { grid-template-columns: 1fr; }
       .footer-main { grid-template-columns: 1fr; gap: 48px; }
       .kv-person { width: 240px; }
+      .hero-photo-grid { grid-template-columns: repeat(5, 1fr); }
+      .hero-photo--wide { grid-column: span 1; }
     }
 
     @media (max-width: 768px) {
@@ -1172,6 +1140,7 @@
       .footer-links-grid { grid-template-columns: repeat(2, 1fr); }
       .kv-person { width: 220px; padding: 10px 14px; }
       .kv-person-avatar { width: 48px; height: 48px; font-size: 18px; }
+      .hero-photo-grid { grid-template-columns: repeat(4, 1fr); gap: 2px; }
     }
   </style>
 </head>
@@ -1189,9 +1158,8 @@
       </a>
 
       <nav>
-        <a href="#about" class="nav-link">FUNBASEとは</a>
-        <a href="#categories" class="nav-link">テーマから探す</a>
         <a href="#projects" class="nav-link">プロジェクト</a>
+        <a href="#categories" class="nav-link">テーマから探す</a>
         <a href="#stories" class="nav-link">活動レポート</a>
         <a href="#news" class="nav-link">お知らせ</a>
       </nav>
@@ -1211,10 +1179,32 @@
   <!-- ===== HERO ===== -->
   <section class="hero">
     <div class="hero-bg">
-      <div class="hero-orb hero-orb-1"></div>
-      <div class="hero-orb hero-orb-2"></div>
-      <div class="hero-orb hero-orb-3"></div>
-      <div class="hero-grid"></div>
+      <div class="hero-photo-grid">
+        <!-- Row 1: 6 cols (1+1+2+1+1) -->
+        <div class="hero-photo"><img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=400&h=400&fit=crop&auto=format" alt="" loading="eager"></div>
+        <div class="hero-photo"><img src="https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400&h=400&fit=crop&auto=format" alt="" loading="eager"></div>
+        <div class="hero-photo hero-photo--wide"><img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&h=400&fit=crop&auto=format" alt="" loading="eager"></div>
+        <div class="hero-photo"><img src="https://images.unsplash.com/photo-1501004318855-6e929e2e0c79?w=400&h=400&fit=crop&auto=format" alt="" loading="eager"></div>
+        <div class="hero-photo"><img src="https://images.unsplash.com/photo-1462275646964-a0e3c11f18a6?w=400&h=400&fit=crop&auto=format" alt="" loading="eager"></div>
+        <!-- Row 2: 6 cols (2+1+1+1+1) -->
+        <div class="hero-photo hero-photo--wide"><img src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=800&h=400&fit=crop&auto=format" alt="" loading="lazy"></div>
+        <div class="hero-photo"><img src="https://images.unsplash.com/photo-1528164344705-47542687000d?w=400&h=400&fit=crop&auto=format" alt="" loading="lazy"></div>
+        <div class="hero-photo"><img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=400&fit=crop&auto=format" alt="" loading="lazy"></div>
+        <div class="hero-photo"><img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=400&fit=crop&auto=format" alt="" loading="lazy"></div>
+        <div class="hero-photo"><img src="https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=400&h=400&fit=crop&auto=format" alt="" loading="lazy"></div>
+        <!-- Row 3: 6 cols (1+1+1+1+2) -->
+        <div class="hero-photo"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=400&fit=crop&auto=format" alt="" loading="lazy"></div>
+        <div class="hero-photo"><img src="https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=400&h=400&fit=crop&auto=format" alt="" loading="lazy"></div>
+        <div class="hero-photo"><img src="https://images.unsplash.com/photo-1590559899731-a382839e5549?w=400&h=400&fit=crop&auto=format" alt="" loading="lazy"></div>
+        <div class="hero-photo"><img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&h=400&fit=crop&auto=format" alt="" loading="lazy"></div>
+        <div class="hero-photo hero-photo--wide"><img src="https://images.unsplash.com/photo-1524813686514-a57563d77965?w=800&h=400&fit=crop&auto=format" alt="" loading="lazy"></div>
+        <!-- Row 4: 6 cols (1+2+1+1+1) -->
+        <div class="hero-photo"><img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400&h=400&fit=crop&auto=format" alt="" loading="lazy"></div>
+        <div class="hero-photo hero-photo--wide"><img src="https://images.unsplash.com/photo-1517760444937-f6397edcbbcd?w=800&h=400&fit=crop&auto=format" alt="" loading="lazy"></div>
+        <div class="hero-photo"><img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=400&h=400&fit=crop&auto=format" alt="" loading="lazy"></div>
+        <div class="hero-photo"><img src="https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400&h=400&fit=crop&auto=format" alt="" loading="lazy"></div>
+        <div class="hero-photo"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&auto=format" alt="" loading="lazy"></div>
+      </div>
     </div>
 
     <div class="hero-content">
@@ -1483,116 +1473,6 @@
   </div>
 
 
-  <!-- ===== ABOUT ===== -->
-  <section class="about-strip" id="about">
-    <div class="container">
-      <div class="about-grid">
-        <div class="about-visual reveal-left">
-          <div class="about-img-wrap">
-            <div class="about-img-placeholder">
-              <div class="icon">🏔️</div>
-              <p>和歌山の風景</p>
-            </div>
-          </div>
-          <div class="about-badge">
-            <div class="about-badge-num">30</div>
-            <div class="about-badge-label">市町村</div>
-          </div>
-        </div>
-
-        <div class="reveal-right">
-          <div class="section-eyebrow">ABOUT</div>
-          <h2 class="section-title">和歌山を<br>もっと面白く。</h2>
-          <p class="section-desc" style="margin-bottom:24px;">
-            わかやまFUNBASEは、和歌山県各地の地域課題を解決したい団体・企業と、
-            地域に関わりたい人材をつなぐオープンなプラットフォームです。<br><br>
-            関わり方は人それぞれ。週末だけ、オンラインで、短期間から——
-            あなたのペースで和歌山との縁を育てましょう。
-          </p>
-
-          <div style="display:flex; gap:32px; margin-bottom:32px; flex-wrap:wrap;">
-            <div>
-              <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:32px;color:var(--orange);">120<span style="font-size:16px;">件</span></div>
-              <div style="font-size:12px;color:var(--text-m);">掲載プロジェクト</div>
-            </div>
-            <div>
-              <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:32px;color:var(--green);">850<span style="font-size:16px;">人</span></div>
-              <div style="font-size:12px;color:var(--text-m);">登録メンバー</div>
-            </div>
-            <div>
-              <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:32px;color:var(--blue);">48<span style="font-size:16px;">件</span></div>
-              <div style="font-size:12px;color:var(--text-m);">今月の新着</div>
-            </div>
-          </div>
-
-          <a href="/about" class="btn-primary" style="display:inline-flex;align-items:center;gap:8px;padding:14px 32px;font-size:14px;">
-            FUNBASEについて詳しく
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ===== CATEGORIES ===== -->
-  <section class="categories" id="categories">
-    <div class="container">
-      <div class="section-header">
-        <div>
-          <div class="section-eyebrow reveal">テーマから探す</div>
-          <h2 class="section-title reveal delay-1">あなたの興味は<br>どのテーマ？</h2>
-        </div>
-        <a href="/categories" class="link-more reveal">
-          全カテゴリを見る
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-      </div>
-
-      <div class="cat-grid">
-        <div class="cat-card cat-card-1 reveal delay-1">
-          <div class="cat-icon">🏘️</div>
-          <div class="cat-name">#まちづくり</div>
-          <div class="cat-count">32件のプロジェクト</div>
-        </div>
-        <div class="cat-card cat-card-2 reveal delay-2">
-          <div class="cat-icon">🌾</div>
-          <div class="cat-name">#農林水産</div>
-          <div class="cat-count">28件のプロジェクト</div>
-        </div>
-        <div class="cat-card cat-card-3 reveal delay-3">
-          <div class="cat-icon">🏕️</div>
-          <div class="cat-name">#体験・交流</div>
-          <div class="cat-count">21件のプロジェクト</div>
-        </div>
-        <div class="cat-card cat-card-4 reveal delay-4">
-          <div class="cat-icon">🍊</div>
-          <div class="cat-name">#観光・食</div>
-          <div class="cat-count">18件のプロジェクト</div>
-        </div>
-        <div class="cat-card cat-card-5 reveal delay-1">
-          <div class="cat-icon">🏥</div>
-          <div class="cat-name">#福祉・医療</div>
-          <div class="cat-count">14件のプロジェクト</div>
-        </div>
-        <div class="cat-card cat-card-6 reveal delay-2">
-          <div class="cat-icon">📚</div>
-          <div class="cat-name">#教育・文化</div>
-          <div class="cat-count">12件のプロジェクト</div>
-        </div>
-        <div class="cat-card cat-card-7 reveal delay-3">
-          <div class="cat-icon">🌿</div>
-          <div class="cat-name">#環境・エネルギー</div>
-          <div class="cat-count">9件のプロジェクト</div>
-        </div>
-        <div class="cat-card cat-card-8 reveal delay-4">
-          <div class="cat-icon">💼</div>
-          <div class="cat-name">#産業・ビジネス</div>
-          <div class="cat-count">7件のプロジェクト</div>
-        </div>
-      </div>
-    </div>
-  </section>
 
 
   <!-- ===== PROJECTS ===== -->
@@ -1601,7 +1481,7 @@
       <div class="section-header">
         <div>
           <div class="section-eyebrow reveal">募集中のプロジェクト</div>
-          <h2 class="section-title reveal delay-1">和歌山で<br>一緒に動こう。</h2>
+          <h2 class="section-title reveal delay-1">和歌山で<br>一緒に働こう。</h2>
         </div>
         <a href="/projects" class="link-more reveal">
           すべて見る
@@ -1774,6 +1654,66 @@
   </section>
 
 
+  <!-- ===== CATEGORIES ===== -->
+  <section class="categories" id="categories">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <div class="section-eyebrow reveal">テーマから探す</div>
+          <h2 class="section-title reveal delay-1">あなたの興味は<br>どのテーマ？</h2>
+        </div>
+        <a href="/categories" class="link-more reveal">
+          全カテゴリを見る
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="cat-grid">
+        <div class="cat-card cat-card-1 reveal delay-1">
+          <div class="cat-icon">🏘️</div>
+          <div class="cat-name">#まちづくり</div>
+          <div class="cat-count">32件のプロジェクト</div>
+        </div>
+        <div class="cat-card cat-card-2 reveal delay-2">
+          <div class="cat-icon">🌾</div>
+          <div class="cat-name">#農林水産</div>
+          <div class="cat-count">28件のプロジェクト</div>
+        </div>
+        <div class="cat-card cat-card-3 reveal delay-3">
+          <div class="cat-icon">🏕️</div>
+          <div class="cat-name">#体験・交流</div>
+          <div class="cat-count">21件のプロジェクト</div>
+        </div>
+        <div class="cat-card cat-card-4 reveal delay-4">
+          <div class="cat-icon">🍊</div>
+          <div class="cat-name">#観光・食</div>
+          <div class="cat-count">18件のプロジェクト</div>
+        </div>
+        <div class="cat-card cat-card-5 reveal delay-1">
+          <div class="cat-icon">🏥</div>
+          <div class="cat-name">#福祉・医療</div>
+          <div class="cat-count">14件のプロジェクト</div>
+        </div>
+        <div class="cat-card cat-card-6 reveal delay-2">
+          <div class="cat-icon">📚</div>
+          <div class="cat-name">#教育・文化</div>
+          <div class="cat-count">12件のプロジェクト</div>
+        </div>
+        <div class="cat-card cat-card-7 reveal delay-3">
+          <div class="cat-icon">🌿</div>
+          <div class="cat-name">#環境・エネルギー</div>
+          <div class="cat-count">9件のプロジェクト</div>
+        </div>
+        <div class="cat-card cat-card-8 reveal delay-4">
+          <div class="cat-icon">💼</div>
+          <div class="cat-name">#産業・ビジネス</div>
+          <div class="cat-count">7件のプロジェクト</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
   <!-- ===== STORIES MARQUEE ===== -->
   <section class="stories-strip" id="stories">
     <div class="stories-header">
@@ -1937,6 +1877,24 @@
           <div class="news-title">サイトリニューアルのお知らせ。より使いやすくなりました！</div>
           <div class="news-arrow">→</div>
         </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== FUNBASE ABOUT ===== -->
+  <section class="funbase-about">
+    <div class="container">
+      <div class="funbase-about-inner reveal">
+        <div class="funbase-about-title">わかやまFUNBASEとは？</div>
+        <div class="funbase-about-svg">
+          <img src="banner__about.svg" alt="わかやまFUNBASEの仕組み：地域の人・団体とサポーターをマッチング">
+        </div>
+        <p class="funbase-about-desc">
+          わかやまFUNBASEは、和歌山県の地域団体・事業者と、地域と関わりたいサポーターをつなぐマッチングプラットフォームです。<br>
+          活動に参加するたびに、あなたの「ファンランク」がアップ。<br>
+          つながり、体験し、和歌山ファンになろう。
+        </p>
       </div>
     </div>
   </section>
