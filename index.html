@@ -1,0 +1,2154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>わかやまFUNBASE | 地域と出会い、人とつながる</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange:   #F47B3F;
+      --orange-d: #D45E20;
+      --green:    #3A8A5C;
+      --green-l:  #5BAF7A;
+      --blue:     #1A5276;
+      --navy:     #0D2E47;
+      --gold:     #E8B840;
+      --white:    #FFFFFF;
+      --gray-l:   #F5F5F0;
+      --gray:     #D9D9D9;
+      --text:     #2C2C2C;
+      --text-m:   #666666;
+      --radius:   12px;
+      --shadow:   0 8px 32px rgba(0,0,0,0.12);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      color: var(--text);
+      background: var(--white);
+      overflow-x: hidden;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+
+    /* ===== SCROLL ANIMATIONS ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal-scale.visible { opacity: 1; transform: scale(1); }
+
+    /* delay variants */
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.2s; }
+    .delay-3 { transition-delay: 0.3s; }
+    .delay-4 { transition-delay: 0.4s; }
+    .delay-5 { transition-delay: 0.5s; }
+
+    /* ===== HEADER ===== */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      transition: box-shadow 0.3s;
+    }
+    header.scrolled {
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    }
+    .header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-mark {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--orange), var(--orange-d));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: white;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 16px;
+      letter-spacing: -1px;
+      box-shadow: 0 4px 12px rgba(244,123,63,0.4);
+      transition: transform 0.2s;
+    }
+    .logo-mark:hover { transform: rotate(-5deg) scale(1.08); }
+    .logo-text {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      line-height: 1.1;
+    }
+    .logo-text span { color: var(--orange); }
+    .logo-sub {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 10px;
+      color: var(--text-m);
+      display: block;
+    }
+    nav { display: flex; align-items: center; gap: 28px; }
+    .nav-link {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      position: relative;
+      padding-bottom: 2px;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 2px;
+      background: var(--orange);
+      transition: width 0.3s;
+    }
+    .nav-link:hover::after { width: 100%; }
+    .header-actions { display: flex; gap: 10px; }
+    .btn-ghost {
+      padding: 8px 18px;
+      border: 1.5px solid var(--orange);
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--orange);
+      transition: all 0.25s;
+    }
+    .btn-ghost:hover {
+      background: var(--orange);
+      color: white;
+    }
+    .btn-primary {
+      padding: 8px 18px;
+      background: linear-gradient(135deg, var(--orange), var(--orange-d));
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      color: white;
+      box-shadow: 0 4px 12px rgba(244,123,63,0.4);
+      transition: all 0.25s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(244,123,63,0.5);
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      overflow: hidden;
+      padding-bottom: 40px;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #0D2E47 0%, #1A5276 50%, #2E7D5A 100%);
+    }
+    /* 背景パターン */
+    .hero-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 50%, rgba(244,123,63,0.25) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(90,175,122,0.2) 0%, transparent 40%),
+        radial-gradient(circle at 60% 80%, rgba(232,184,64,0.15) 0%, transparent 35%);
+    }
+    /* 浮遊する円 */
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      animation: float-orb 8s ease-in-out infinite;
+    }
+    .hero-orb-1 {
+      width: 500px; height: 500px;
+      background: rgba(244,123,63,0.18);
+      top: -100px; right: -100px;
+      animation-delay: 0s;
+    }
+    .hero-orb-2 {
+      width: 350px; height: 350px;
+      background: rgba(58,138,92,0.2);
+      bottom: -80px; left: 10%;
+      animation-delay: -3s;
+    }
+    .hero-orb-3 {
+      width: 250px; height: 250px;
+      background: rgba(232,184,64,0.15);
+      top: 30%; left: 40%;
+      animation-delay: -5s;
+    }
+    @keyframes float-orb {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(20px, -30px) scale(1.05); }
+      66% { transform: translate(-15px, 20px) scale(0.95); }
+    }
+    /* グリッドライン */
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 100px 24px 24px;
+      width: 100%;
+      text-align: center;
+    }
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(244,123,63,0.2);
+      border: 1px solid rgba(244,123,63,0.4);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 12px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      color: #FFA06A;
+      letter-spacing: 0.05em;
+      margin-bottom: 24px;
+      animation: fade-in-down 0.8s ease both;
+    }
+    .hero-label-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--orange);
+      animation: blink 1.5s ease-in-out infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    .hero-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: clamp(40px, 5vw, 68px);
+      color: white;
+      line-height: 1.05;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+      animation: fade-in-up 0.8s ease 0.2s both;
+    }
+    .hero-title-ja {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 700;
+      font-size: clamp(18px, 2.5vw, 28px);
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 24px;
+      animation: fade-in-up 0.8s ease 0.35s both;
+    }
+    .hero-desc {
+      font-size: 15px;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.65);
+      max-width: 560px;
+      margin: 0 auto 32px;
+      animation: fade-in-up 0.8s ease 0.5s both;
+    }
+    .hero-cta {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      animation: fade-in-up 0.8s ease 0.65s both;
+    }
+    .btn-hero-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, var(--orange), var(--orange-d));
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 700;
+      color: white;
+      box-shadow: 0 8px 24px rgba(244,123,63,0.5);
+      transition: all 0.3s;
+    }
+    .btn-hero-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(244,123,63,0.65);
+    }
+    .btn-hero-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      border: 1.5px solid rgba(255,255,255,0.3);
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 600;
+      color: white;
+      backdrop-filter: blur(8px);
+      background: rgba(255,255,255,0.08);
+      transition: all 0.3s;
+    }
+    .btn-hero-ghost:hover {
+      border-color: rgba(255,255,255,0.7);
+      background: rgba(255,255,255,0.15);
+      transform: translateY(-3px);
+    }
+    .hero-stats {
+      display: flex;
+      gap: 32px;
+      justify-content: center;
+      margin-top: 36px;
+      padding-top: 28px;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      animation: fade-in-up 0.8s ease 0.8s both;
+      display: inline-flex;
+    }
+    .hero-stat-num {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 36px;
+      color: white;
+      line-height: 1;
+    }
+    .hero-stat-num span { color: var(--orange); }
+    .hero-stat-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      margin-top: 4px;
+    }
+
+    /* ===== KV PERSON SLIDER ===== */
+    .kv-slider-wrap {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      overflow: hidden;
+      padding: 24px 0 0;
+      animation: fade-in-up 1s ease 0.8s both;
+    }
+    .kv-slider-row {
+      display: flex;
+      gap: 16px;
+      width: max-content;
+      padding: 8px 0;
+    }
+    .kv-slider-row--rtl {
+      animation: kv-scroll-rtl 50s linear infinite;
+    }
+    .kv-slider-row--ltr {
+      animation: kv-scroll-ltr 55s linear infinite;
+    }
+    .kv-slider-wrap:hover .kv-slider-row {
+      animation-play-state: paused;
+    }
+    @keyframes kv-scroll-rtl {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    @keyframes kv-scroll-ltr {
+      from { transform: translateX(-50%); }
+      to { transform: translateX(0); }
+    }
+
+    .kv-person {
+      flex-shrink: 0;
+      width: 280px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      color: white;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .kv-person:hover {
+      background: rgba(255,255,255,0.16);
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+      border-color: rgba(255,255,255,0.25);
+    }
+    .kv-person-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 800;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      border: 2px solid rgba(255,255,255,0.3);
+    }
+    .kv-person-info {
+      min-width: 0;
+      flex: 1;
+    }
+    .kv-person-name {
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .kv-person-from {
+      font-size: 11px;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .kv-person-from .arrow {
+      color: var(--orange);
+      font-weight: 700;
+    }
+    .kv-person-subtitle {
+      font-size: 11px;
+      line-height: 1.45;
+      color: rgba(255,255,255,0.55);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    @keyframes fade-in-up {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fade-in-down {
+      from { opacity: 0; transform: translateY(-16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fade-in-right {
+      from { opacity: 0; transform: translateX(32px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* scroll indicator */
+    .hero-scroll {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.4);
+      font-size: 11px;
+      font-family: 'Montserrat', sans-serif;
+      letter-spacing: 0.1em;
+      animation: fade-in-up 1s ease 1.2s both;
+    }
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
+      animation: scroll-down 2s ease-in-out infinite;
+    }
+    @keyframes scroll-down {
+      0% { transform: scaleY(0); transform-origin: top; }
+      50% { transform: scaleY(1); transform-origin: top; }
+      51% { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+
+    /* ===== TICKER ===== */
+    .ticker {
+      background: var(--navy);
+      padding: 12px 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .ticker::before, .ticker::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 80px;
+      z-index: 2;
+    }
+    .ticker::before {
+      left: 0;
+      background: linear-gradient(to right, var(--navy), transparent);
+    }
+    .ticker::after {
+      right: 0;
+      background: linear-gradient(to left, var(--navy), transparent);
+    }
+    .ticker-inner {
+      display: flex;
+      gap: 48px;
+      animation: ticker-move 30s linear infinite;
+      width: max-content;
+    }
+    .ticker-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: rgba(255,255,255,0.6);
+      font-size: 12px;
+      font-family: 'Montserrat', sans-serif;
+      white-space: nowrap;
+    }
+    .ticker-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--orange);
+    }
+    @keyframes ticker-move {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ===== SECTION BASE ===== */
+    section { padding: 100px 0; }
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .section-eyebrow {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: var(--orange);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-eyebrow::before {
+      content: '';
+      width: 32px; height: 2px;
+      background: var(--orange);
+      border-radius: 2px;
+    }
+    .section-title {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 900;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .section-desc {
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--text-m);
+      max-width: 600px;
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 52px;
+      gap: 24px;
+    }
+    .link-more {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--orange);
+      white-space: nowrap;
+      transition: gap 0.2s;
+    }
+    .link-more:hover { gap: 10px; }
+
+    /* ===== ABOUT STRIP ===== */
+    .about-strip {
+      background: var(--gray-l);
+      padding: 80px 0;
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .about-visual {
+      position: relative;
+    }
+    .about-img-wrap {
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      aspect-ratio: 4/3;
+      background: linear-gradient(135deg, var(--navy), var(--green));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .about-img-placeholder {
+      text-align: center;
+      color: rgba(255,255,255,0.6);
+    }
+    .about-img-placeholder .icon { font-size: 80px; margin-bottom: 16px; }
+    .about-img-placeholder p { font-size: 14px; }
+    .about-badge {
+      position: absolute;
+      bottom: -20px;
+      right: -20px;
+      width: 110px; height: 110px;
+      background: linear-gradient(135deg, var(--orange), var(--gold));
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 12px 32px rgba(244,123,63,0.4);
+      animation: spin-slow 12s linear infinite;
+      border: 4px solid white;
+    }
+    .about-badge-num {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 30px;
+      line-height: 1;
+    }
+    .about-badge-label { font-size: 10px; font-weight: 700; }
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* ===== CATEGORIES ===== */
+    .categories { background: white; }
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .cat-card {
+      border-radius: 16px;
+      padding: 28px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid transparent;
+    }
+    .cat-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .cat-card:hover { transform: translateY(-6px); }
+    .cat-card:hover::before { opacity: 1; }
+    .cat-card:hover { box-shadow: 0 20px 40px rgba(0,0,0,0.12); }
+
+    .cat-card-1 { background: #FFF8F4; }
+    .cat-card-1:hover { border-color: var(--orange); }
+    .cat-card-2 { background: #F0F9F4; }
+    .cat-card-2:hover { border-color: var(--green); }
+    .cat-card-3 { background: #F0F6FF; }
+    .cat-card-3:hover { border-color: #4A80D4; }
+    .cat-card-4 { background: #FFF9EF; }
+    .cat-card-4:hover { border-color: var(--gold); }
+    .cat-card-5 { background: #FFF4FA; }
+    .cat-card-5:hover { border-color: #D45EA8; }
+    .cat-card-6 { background: #F4FEFF; }
+    .cat-card-6:hover { border-color: #1ABCCE; }
+    .cat-card-7 { background: #F6F4FF; }
+    .cat-card-7:hover { border-color: #7B5EA7; }
+    .cat-card-8 { background: #FFFBF0; }
+    .cat-card-8:hover { border-color: #C48B1A; }
+
+    .cat-icon {
+      font-size: 36px;
+      transition: transform 0.3s;
+    }
+    .cat-card:hover .cat-icon { transform: scale(1.2) rotate(-5deg); }
+    .cat-name {
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .cat-count {
+      font-size: 12px;
+      color: var(--text-m);
+    }
+
+    /* ===== PROJECTS ===== */
+    .projects { background: var(--gray-l); }
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .project-card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      transition: all 0.35s ease;
+      cursor: pointer;
+    }
+    .project-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 48px rgba(0,0,0,0.14);
+    }
+    .project-thumb {
+      height: 200px;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-thumb-bg {
+      width: 100%; height: 100%;
+      transition: transform 0.5s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 56px;
+    }
+    .project-card:hover .project-thumb-bg { transform: scale(1.08); }
+    .project-thumb-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%);
+    }
+    .project-tags {
+      position: absolute;
+      top: 12px; left: 12px;
+      display: flex; gap: 6px; flex-wrap: wrap;
+    }
+    .project-tag {
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(4px);
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .project-status {
+      position: absolute;
+      bottom: 12px; right: 12px;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+      color: white;
+    }
+    .status-open { background: #3A8A5C; }
+    .status-soon { background: var(--orange); }
+    .project-body {
+      padding: 20px 22px 24px;
+    }
+    .project-location {
+      font-size: 12px;
+      color: var(--text-m);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .project-name {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+    .project-desc {
+      font-size: 13px;
+      color: var(--text-m);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .project-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 14px;
+      border-top: 1px solid var(--gray);
+    }
+    .project-orgs {
+      display: flex; gap: -4px;
+    }
+    .project-org-icon {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 2px solid white;
+      background: var(--gray-l);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      margin-left: -6px;
+    }
+    .project-org-icon:first-child { margin-left: 0; }
+    .project-btn {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--orange);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: gap 0.2s;
+    }
+    .project-btn:hover { gap: 8px; }
+
+    /* ===== STORIES / MARQUEE ===== */
+    .stories-strip {
+      background: linear-gradient(135deg, var(--navy) 0%, #1A5276 50%, var(--green) 100%);
+      padding: 80px 0;
+      overflow: hidden;
+    }
+    .stories-header {
+      max-width: 1280px;
+      margin: 0 auto 48px;
+      padding: 0 24px;
+      color: white;
+    }
+    .stories-header .section-eyebrow { color: var(--gold); }
+    .stories-header .section-eyebrow::before { background: var(--gold); }
+    .stories-header .section-title { color: white; }
+    .stories-marquee {
+      display: flex;
+      gap: 20px;
+      animation: marquee 30s linear infinite;
+      width: max-content;
+    }
+    .stories-marquee:hover { animation-play-state: paused; }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    .story-card {
+      width: 280px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.12);
+      overflow: hidden;
+      flex-shrink: 0;
+      transition: all 0.3s;
+    }
+    .story-card:hover {
+      background: rgba(255,255,255,0.14);
+      transform: translateY(-6px);
+    }
+    .story-img {
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 60px;
+    }
+    .story-body {
+      padding: 18px 20px 20px;
+      color: white;
+    }
+    .story-name {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .story-role {
+      font-size: 12px;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 10px;
+    }
+    .story-quote {
+      font-size: 13px;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.6;
+    }
+
+    /* ===== NEWS ===== */
+    .news { background: white; }
+    .news-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border-top: 1px solid var(--gray);
+    }
+    .news-item {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--gray);
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+    .news-item:hover { background: var(--gray-l); padding-left: 12px; border-radius: 8px; }
+    .news-date {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-m);
+      white-space: nowrap;
+      min-width: 80px;
+    }
+    .news-cat {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+    .news-cat-event { background: #FFF0E8; color: var(--orange); }
+    .news-cat-report { background: #F0F9F4; color: var(--green); }
+    .news-cat-info { background: #EEF4FF; color: #4A80D4; }
+    .news-title {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+    .news-arrow {
+      margin-left: auto;
+      color: var(--gray);
+      transition: color 0.2s, transform 0.2s;
+    }
+    .news-item:hover .news-arrow {
+      color: var(--orange);
+      transform: translateX(4px);
+    }
+
+    /* ===== CTA BANNER ===== */
+    .cta-section {
+      background: white;
+      padding: 0 0 100px;
+    }
+    .cta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .cta-card {
+      border-radius: 24px;
+      padding: 52px 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .cta-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.18);
+    }
+    .cta-card-primary {
+      background: linear-gradient(135deg, var(--orange) 0%, #E8B840 100%);
+      color: white;
+    }
+    .cta-card-secondary {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--green) 100%);
+      color: white;
+    }
+    .cta-card::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -60px;
+      width: 260px; height: 260px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+    }
+    .cta-card::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: 30px;
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+    }
+    .cta-icon { font-size: 48px; }
+    .cta-title {
+      font-size: 24px;
+      font-weight: 900;
+      line-height: 1.3;
+    }
+    .cta-desc {
+      font-size: 14px;
+      line-height: 1.7;
+      opacity: 0.8;
+    }
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      border-radius: 100px;
+      padding: 12px 28px;
+      font-size: 14px;
+      font-weight: 700;
+      transition: all 0.3s;
+      align-self: flex-start;
+    }
+    .cta-card-primary .cta-btn { color: var(--orange); }
+    .cta-card-secondary .cta-btn { color: var(--navy); }
+    .cta-btn:hover { transform: scale(1.04); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--navy);
+      color: white;
+    }
+    .footer-main {
+      padding: 72px 0 48px;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 72px 24px 48px;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 80px;
+    }
+    .footer-brand .logo-mark {
+      margin-bottom: 16px;
+    }
+    .footer-brand p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+    .footer-sns {
+      display: flex;
+      gap: 12px;
+    }
+    .footer-sns-btn {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: all 0.25s;
+    }
+    .footer-sns-btn:hover {
+      border-color: var(--orange);
+      background: rgba(244,123,63,0.15);
+    }
+    .footer-links-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+    }
+    .footer-links-title {
+      font-size: 12px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .footer-links li {
+      list-style: none;
+      margin-bottom: 10px;
+    }
+    .footer-links a {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: white; }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 24px;
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-copy {
+      font-size: 12px;
+      color: rgba(255,255,255,0.3);
+    }
+    .footer-policy {
+      display: flex;
+      gap: 24px;
+    }
+    .footer-policy a {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      transition: color 0.2s;
+    }
+    .footer-policy a:hover { color: white; }
+
+    /* ===== MOBILE NAV TOGGLE ===== */
+    .menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .menu-btn span {
+      display: block;
+      width: 22px; height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .about-grid { grid-template-columns: 1fr; gap: 48px; }
+      .cat-grid { grid-template-columns: repeat(2, 1fr); }
+      .project-grid { grid-template-columns: repeat(2, 1fr); }
+      .cta-grid { grid-template-columns: 1fr; }
+      .footer-main { grid-template-columns: 1fr; gap: 48px; }
+      .kv-person { width: 240px; }
+    }
+
+    @media (max-width: 768px) {
+      nav { display: none; }
+      .header-actions { display: none; }
+      .menu-btn { display: flex; }
+      .project-grid { grid-template-columns: 1fr; }
+      .hero-title { font-size: 36px; }
+      .hero-cta { flex-direction: row; flex-wrap: wrap; }
+      .btn-hero-primary, .btn-hero-ghost { padding: 12px 24px; font-size: 14px; }
+      .section-header { flex-direction: column; align-items: flex-start; }
+      .footer-links-grid { grid-template-columns: repeat(2, 1fr); }
+      .kv-person { width: 220px; padding: 10px 14px; }
+      .kv-person-avatar { width: 48px; height: 48px; font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header id="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+        <div class="logo-mark">WF</div>
+        <div>
+          <div class="logo-text">WAKAYAMA <span>FUN</span>BASE</div>
+          <span class="logo-sub">地域と出会い、人とつながる</span>
+        </div>
+      </a>
+
+      <nav>
+        <a href="#about" class="nav-link">FUNBASEとは</a>
+        <a href="#categories" class="nav-link">テーマから探す</a>
+        <a href="#projects" class="nav-link">プロジェクト</a>
+        <a href="#stories" class="nav-link">活動レポート</a>
+        <a href="#news" class="nav-link">お知らせ</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="/login" class="btn-ghost">ログイン</a>
+        <a href="/register" class="btn-primary">無料で登録</a>
+      </div>
+
+      <button class="menu-btn" aria-label="メニュー">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="hero-orb hero-orb-1"></div>
+      <div class="hero-orb hero-orb-2"></div>
+      <div class="hero-orb hero-orb-3"></div>
+      <div class="hero-grid"></div>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-label">
+        <span class="hero-label-dot"></span>
+        FIND YOUR CONNECTED MIND COMMUNITY
+      </div>
+
+      <h1 class="hero-title">WAKAYAMA<br>FUNBASE</h1>
+      <p class="hero-title-ja">和歌山と、出会う。人と、つながる。</p>
+
+      <p class="hero-desc">
+        わかやまFUNBASEは、和歌山県の多様な地域課題に挑む<br>
+        プロジェクトと人材をつなぐ関係人口創出プラットフォームです。
+      </p>
+
+      <div class="hero-cta">
+        <a href="/projects" class="btn-hero-primary">
+          プロジェクトを探す
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="/about" class="btn-hero-ghost">
+          詳しく見る
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- キーパーソンスライダー -->
+    <div class="kv-slider-wrap">
+      <!-- 上段: 右→左 -->
+      <div class="kv-slider-row kv-slider-row--rtl">
+        <!-- 1周目 -->
+        <div class="kv-person">
+          <div class="kv-person-avatar" style="background:linear-gradient(135deg,#E74C3C,#F39C12);">G</div>
+          <div class="kv-person-info">
+            <div class="kv-person-name">グナー・ヒュッツ さん</div>
+            <div class="kv-person-from">ドイツ <span class="arrow">→</span> 高野町</div>
+            <div class="kv-person-subtitle">日本文化の奥深さを伝える若き修行僧</div>
+          </div>
+        </div>
+        <div class="kv-person">
+          <div class="kv-person-avatar" style="background:linear-gradient(135deg,#1ABC9C,#2ECC71);">稲</div>
+          <div class="kv-person-info">
+            <div class="kv-person-name">稲垣 順也 さん</div>
+            <div class="kv-person-from">愛知県 <span class="arrow">→</span> 串本町</div>
+            <div class="kv-person-subtitle">釣りの聖地・串本へ！アオリイカを追い求める海暮らし</div>
+          </div>
+        </div>
+        <div class="kv-person">
+          <div class="kv-person-avatar" style="background:linear-gradient(135deg,#3498DB,#2980B9);">中</div>
+          <div class="kv-person-info">
+            <div class="kv-person-name">中田 悠介 さん</div>
+            <div class="kv-person-from">神奈川県 <span class="arrow">→</span> 湯浅町</div>
+            <div class="kv-person-subtitle">憧れのワイン造りへ。湯浅町で踏み出す新たな一歩</div>
+          </div>
+        </div>
+        <div class="kv-person">
+          <div class="kv-person-avatar" style="background:linear-gradient(135deg,#27AE60,#2ECC71);">山</div>
+          <div class="kv-person-info">
+            <div class="kv-person-name">山下 丈太 さん</div>
+            <div class="kv-person-from">京都府 <span class="arrow">→</span> みなべ町</div>
+            <div class="kv-person-subtitle">農業と人をつなぐ架け橋。「アグリナジカン」代表</div>
+          </div>
+        </div>
+        <div class="kv-person">
+          <div class="kv-person-avatar" style="background:linear-gradient(135deg,#9B59B6,#8E44AD);">井</div>
+          <div class="kv-person-info">
+            <div class="kv-person-name">井村 憲吾 さん</div>
+            <div class="kv-person-from">東京都 <span class="arrow">→</span> 岩出市</div>
+            <div class="kv-person-subtitle">ゲームの出会いが導いた学習塾起業</div>
+          </div>
+        </div>
+        <div class="kv-person">
+          <div class="kv-person-avatar" style="background:linear-gradient(135deg,#F39C12,#E67E22);">湯</div>
+          <div class="kv-person-info">
+            <div class="kv-person-name">湯川 克巳・由美子 さん</div>
+            <div class="kv-person-from">埼玉県 <span class="arrow">→</span> 日高町</div>
+            <div class="kv-person-subtitle">IT最前線からUターン。古民家カフェ「楽」を紡ぐ</div>
+          </div>
+        </div>
+        <!-- 2周目（無限ループ用コピー） -->
+        <div class="kv-person">
+          <div class="kv-person-avatar" style="background:linear-gradient(135deg,#E74C3C,#F39C12);">G</div>
+          <div class="kv-person-info">
+            <div class="kv-person-name">グナー・ヒュッツ さん</div>
+            <div class="kv-person-from">ドイツ <span class="arrow">→</span> 高野町</div>
+            <div class="kv-person-subtitle">日本文化の奥深さを伝える若き修行僧</div>
+          </div>
+        </div>
+        <div class="kv-person">
+          <div class="kv-person-avatar" style="background:linear-gradient(135deg,#1ABC9C,#2ECC71);">稲</div>
+          <div class="kv-person-info">
+            <div class="kv-person-name">稲垣 順也 さん</div>
+            <div class="kv-person-from">愛知県 <span class="arrow">→</span> 串本町</div>
+            <div class="kv-person-subtitle">釣りの聖地・串本へ！アオリイカを追い求める海暮らし</div>
+          </div>
+        </div>
+        <div class="kv-person">
+          <div class="kv-person-avatar" style="background:linear-gradient(135deg,#3498DB,#2980B9);">中</div>
+          <div class="kv-person-info">
+            <div class="kv-person-name">中田 悠介 さん</div>
+            <div class="kv-person-from">神奈川県 <span class="arrow">→</span> 湯浅町</div>
+            <div class="kv-person-subtitle">憧れのワイン造りへ。湯浅町で踏み出す新たな一歩</div>
+          </div>
+        </div>
+        <div class="kv-person">
+          <div class="kv-person-avatar" style="background:linear-gradient(135deg,#27AE60,#2ECC71);">山</div>
+          <div class="kv-person-info">
+            <div class="kv-person-name">山下 丈太 さん</div>
+            <div class="kv-person-from">京都府 <span class="arrow">→</span> みなべ町</div>
+            <div class="kv-person-subtitle">農業と人をつなぐ架け橋。「アグリナジカン」代表</div>
+          </div>
+        </div>
+        <div class="kv-person">
+          <div class="kv-person-avatar" style="background:linear-gradient(135deg,#9B59B6,#8E44AD);">井</div>
+          <div class="kv-person-info">
+            <div class="kv-person-name">井村 憲吾 さん</div>
+            <div class="kv-person-from">東京都 <span class="arrow">→</span> 岩出市</div>
+            <div class="kv-person-subtitle">ゲームの出会いが導いた学習塾起業</div>
+          </div>
+        </div>
+        <div class="kv-person">
+          <div class="kv-person-avatar" style="background:linear-gradient(135deg,#F39C12,#E67E22);">湯</div>
+          <div class="kv-person-info">
+            <div class="kv-person-name">湯川 克巳・由美子 さん</div>
+            <div class="kv-person-from">埼玉県 <span class="arrow">→</span> 日高町</div>
+            <div class="kv-person-subtitle">IT最前線からUターン。古民家カフェ「楽」を紡ぐ</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 下段: 左→右（逆方向） -->
+      <div class="kv-slider-row kv-slider-row--ltr">
+        <!-- 1周目 -->
+        <div class="kv-person">
+          <div class="kv-person-avatar" style="background:linear-gradient(135deg,#2ECC71,#1ABC9C);">高</div>
+          <div class="kv-person-info">
+            <div class="kv-person-name">高瀬 勇人 さん</div>
+            <div class="kv-person-from">石川県 <span class="arrow">→</span> 橋本市</div>
+            <div class="kv-person-subtitle">銭湯愛を仕事に！「高野口乃湯」を沸かす若き番頭</div>
+          </div>
+        </div>
+        <div class="kv-person">
+          <div class="kv-person-avatar" style="background:linear-gradient(135deg,#E67E22,#D35400);">吉</div>
+          <div class="kv-person-info">
+            <div class="kv-person-name">吉田 雅之・江美 さん</div>
+            <div class="kv-person-from">大阪府 <span class="arrow">→</span> 美浜町</div>
+            <div class="kv-person-subtitle">空き家をDIYで大改装！笑顔を結ぶ「おはな結び」</div>
+          </div>
+        </div>
+        <div class="kv-person">
+          <div class="kv-person-avatar" style="background:linear-gradient(135deg,#16A085,#27AE60);">上</div>
+          <div class="kv-person-info">
+            <div class="kv-person-name">上林 浩和 さん</div>
+            <div class="kv-person-from">岐阜県 <span class="arrow">→</span> 有田市</div>
+            <div class="kv-person-subtitle">55歳からの挑戦！未経験からみかん農家へ</div>
+          </div>
+        </div>
+        <div class="kv-person">
+          <div class="kv-person-avatar" style="background:linear-gradient(135deg,#C0392B,#E74C3C);">小</div>
+          <div class="kv-person-info">
+            <div class="kv-person-name">小鮒 紀代美 さん</div>
+            <div class="kv-person-from">大阪府 <span class="arrow">→</span> 印南町</div>
+            <div class="kv-person-subtitle">スコットランドで描いた夢を印南町で。絶景の「Nico Cafe」</div>
+          </div>
+        </div>
+        <div class="kv-person">
+          <div class="kv-person-avatar" style="background:linear-gradient(135deg,#8E44AD,#9B59B6);">な</div>
+          <div class="kv-person-info">
+            <div class="kv-person-name">なましいたけ.com さん</div>
+            <div class="kv-person-from">大阪府 <span class="arrow">→</span> 由良町</div>
+            <div class="kv-person-subtitle">釣りが好きすぎて由良町へ！海辺で暮らす特化型YouTuber</div>
+          </div>
+        </div>
+        <div class="kv-person">
+          <div class="kv-person-avatar" style="background:linear-gradient(135deg,#2980B9,#3498DB);">熱</div>
+          <div class="kv-person-info">
+            <div class="kv-person-name">熱川 興司・真佐代 さん</div>
+            <div class="kv-person-from">大阪府 <span class="arrow">→</span> 紀の川市</div>
+            <div class="kv-person-subtitle">夫婦で叶えた理想の住まいとセカンドライフ</div>
+          </div>
+        </div>
+        <!-- 2周目（無限ループ用コピー） -->
+        <div class="kv-person">
+          <div class="kv-person-avatar" style="background:linear-gradient(135deg,#2ECC71,#1ABC9C);">高</div>
+          <div class="kv-person-info">
+            <div class="kv-person-name">高瀬 勇人 さん</div>
+            <div class="kv-person-from">石川県 <span class="arrow">→</span> 橋本市</div>
+            <div class="kv-person-subtitle">銭湯愛を仕事に！「高野口乃湯」を沸かす若き番頭</div>
+          </div>
+        </div>
+        <div class="kv-person">
+          <div class="kv-person-avatar" style="background:linear-gradient(135deg,#E67E22,#D35400);">吉</div>
+          <div class="kv-person-info">
+            <div class="kv-person-name">吉田 雅之・江美 さん</div>
+            <div class="kv-person-from">大阪府 <span class="arrow">→</span> 美浜町</div>
+            <div class="kv-person-subtitle">空き家をDIYで大改装！笑顔を結ぶ「おはな結び」</div>
+          </div>
+        </div>
+        <div class="kv-person">
+          <div class="kv-person-avatar" style="background:linear-gradient(135deg,#16A085,#27AE60);">上</div>
+          <div class="kv-person-info">
+            <div class="kv-person-name">上林 浩和 さん</div>
+            <div class="kv-person-from">岐阜県 <span class="arrow">→</span> 有田市</div>
+            <div class="kv-person-subtitle">55歳からの挑戦！未経験からみかん農家へ</div>
+          </div>
+        </div>
+        <div class="kv-person">
+          <div class="kv-person-avatar" style="background:linear-gradient(135deg,#C0392B,#E74C3C);">小</div>
+          <div class="kv-person-info">
+            <div class="kv-person-name">小鮒 紀代美 さん</div>
+            <div class="kv-person-from">大阪府 <span class="arrow">→</span> 印南町</div>
+            <div class="kv-person-subtitle">スコットランドで描いた夢を印南町で。絶景の「Nico Cafe」</div>
+          </div>
+        </div>
+        <div class="kv-person">
+          <div class="kv-person-avatar" style="background:linear-gradient(135deg,#8E44AD,#9B59B6);">な</div>
+          <div class="kv-person-info">
+            <div class="kv-person-name">なましいたけ.com さん</div>
+            <div class="kv-person-from">大阪府 <span class="arrow">→</span> 由良町</div>
+            <div class="kv-person-subtitle">釣りが好きすぎて由良町へ！海辺で暮らす特化型YouTuber</div>
+          </div>
+        </div>
+        <div class="kv-person">
+          <div class="kv-person-avatar" style="background:linear-gradient(135deg,#2980B9,#3498DB);">熱</div>
+          <div class="kv-person-info">
+            <div class="kv-person-name">熱川 興司・真佐代 さん</div>
+            <div class="kv-person-from">大阪府 <span class="arrow">→</span> 紀の川市</div>
+            <div class="kv-person-subtitle">夫婦で叶えた理想の住まいとセカンドライフ</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-scroll">
+      SCROLL
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+
+  <!-- ===== TICKER ===== -->
+  <div class="ticker">
+    <div class="ticker-inner" id="ticker">
+      <span class="ticker-item"><span class="ticker-dot"></span>プロジェクト募集中</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>#まちづくり</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>#農林水産</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>#観光・食</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>#福祉・医療</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>#教育・文化</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>#環境・エネルギー</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>#産業・ビジネス</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>#移住・定住</span>
+      <!-- duplicate for seamless loop -->
+      <span class="ticker-item"><span class="ticker-dot"></span>プロジェクト募集中</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>#まちづくり</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>#農林水産</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>#観光・食</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>#福祉・医療</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>#教育・文化</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>#環境・エネルギー</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>#産業・ビジネス</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>#移住・定住</span>
+    </div>
+  </div>
+
+
+  <!-- ===== ABOUT ===== -->
+  <section class="about-strip" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-visual reveal-left">
+          <div class="about-img-wrap">
+            <div class="about-img-placeholder">
+              <div class="icon">🏔️</div>
+              <p>和歌山の風景</p>
+            </div>
+          </div>
+          <div class="about-badge">
+            <div class="about-badge-num">30</div>
+            <div class="about-badge-label">市町村</div>
+          </div>
+        </div>
+
+        <div class="reveal-right">
+          <div class="section-eyebrow">ABOUT</div>
+          <h2 class="section-title">和歌山を<br>もっと面白く。</h2>
+          <p class="section-desc" style="margin-bottom:24px;">
+            わかやまFUNBASEは、和歌山県各地の地域課題を解決したい団体・企業と、
+            地域に関わりたい人材をつなぐオープンなプラットフォームです。<br><br>
+            関わり方は人それぞれ。週末だけ、オンラインで、短期間から——
+            あなたのペースで和歌山との縁を育てましょう。
+          </p>
+
+          <div style="display:flex; gap:32px; margin-bottom:32px; flex-wrap:wrap;">
+            <div>
+              <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:32px;color:var(--orange);">120<span style="font-size:16px;">件</span></div>
+              <div style="font-size:12px;color:var(--text-m);">掲載プロジェクト</div>
+            </div>
+            <div>
+              <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:32px;color:var(--green);">850<span style="font-size:16px;">人</span></div>
+              <div style="font-size:12px;color:var(--text-m);">登録メンバー</div>
+            </div>
+            <div>
+              <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:32px;color:var(--blue);">48<span style="font-size:16px;">件</span></div>
+              <div style="font-size:12px;color:var(--text-m);">今月の新着</div>
+            </div>
+          </div>
+
+          <a href="/about" class="btn-primary" style="display:inline-flex;align-items:center;gap:8px;padding:14px 32px;font-size:14px;">
+            FUNBASEについて詳しく
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== CATEGORIES ===== -->
+  <section class="categories" id="categories">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <div class="section-eyebrow reveal">テーマから探す</div>
+          <h2 class="section-title reveal delay-1">あなたの興味は<br>どのテーマ？</h2>
+        </div>
+        <a href="/categories" class="link-more reveal">
+          全カテゴリを見る
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="cat-grid">
+        <div class="cat-card cat-card-1 reveal delay-1">
+          <div class="cat-icon">🏘️</div>
+          <div class="cat-name">#まちづくり</div>
+          <div class="cat-count">32件のプロジェクト</div>
+        </div>
+        <div class="cat-card cat-card-2 reveal delay-2">
+          <div class="cat-icon">🌾</div>
+          <div class="cat-name">#農林水産</div>
+          <div class="cat-count">28件のプロジェクト</div>
+        </div>
+        <div class="cat-card cat-card-3 reveal delay-3">
+          <div class="cat-icon">🏕️</div>
+          <div class="cat-name">#体験・交流</div>
+          <div class="cat-count">21件のプロジェクト</div>
+        </div>
+        <div class="cat-card cat-card-4 reveal delay-4">
+          <div class="cat-icon">🍊</div>
+          <div class="cat-name">#観光・食</div>
+          <div class="cat-count">18件のプロジェクト</div>
+        </div>
+        <div class="cat-card cat-card-5 reveal delay-1">
+          <div class="cat-icon">🏥</div>
+          <div class="cat-name">#福祉・医療</div>
+          <div class="cat-count">14件のプロジェクト</div>
+        </div>
+        <div class="cat-card cat-card-6 reveal delay-2">
+          <div class="cat-icon">📚</div>
+          <div class="cat-name">#教育・文化</div>
+          <div class="cat-count">12件のプロジェクト</div>
+        </div>
+        <div class="cat-card cat-card-7 reveal delay-3">
+          <div class="cat-icon">🌿</div>
+          <div class="cat-name">#環境・エネルギー</div>
+          <div class="cat-count">9件のプロジェクト</div>
+        </div>
+        <div class="cat-card cat-card-8 reveal delay-4">
+          <div class="cat-icon">💼</div>
+          <div class="cat-name">#産業・ビジネス</div>
+          <div class="cat-count">7件のプロジェクト</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== PROJECTS ===== -->
+  <section class="projects" id="projects">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <div class="section-eyebrow reveal">募集中のプロジェクト</div>
+          <h2 class="section-title reveal delay-1">和歌山で<br>一緒に動こう。</h2>
+        </div>
+        <a href="/projects" class="link-more reveal">
+          すべて見る
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="project-grid">
+        <!-- Card 1 -->
+        <div class="project-card reveal delay-1">
+          <div class="project-thumb">
+            <div class="project-thumb-bg" style="background:linear-gradient(135deg,#2E7D5A,#1A5276);">🌲</div>
+            <div class="project-thumb-overlay"></div>
+            <div class="project-tags">
+              <span class="project-tag">#農林水産</span>
+            </div>
+            <span class="project-status status-open">募集中</span>
+          </div>
+          <div class="project-body">
+            <div class="project-location">📍 田辺市</div>
+            <div class="project-name">備長炭の産地を守る！炭焼き職人の技術を学びませんか</div>
+            <div class="project-desc">南高梅と並ぶ和歌山の誇り、備長炭。その技を次の世代へ伝えるプロジェクトです。</div>
+            <div class="project-footer">
+              <div class="project-orgs">
+                <div class="project-org-icon">🏭</div>
+                <div class="project-org-icon">🌿</div>
+              </div>
+              <a href="#" class="project-btn">
+                詳しく見る
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="project-card reveal delay-2">
+          <div class="project-thumb">
+            <div class="project-thumb-bg" style="background:linear-gradient(135deg,#F47B3F,#E8B840);">🍊</div>
+            <div class="project-thumb-overlay"></div>
+            <div class="project-tags">
+              <span class="project-tag">#農林水産</span>
+              <span class="project-tag">#まちづくり</span>
+            </div>
+            <span class="project-status status-open">募集中</span>
+          </div>
+          <div class="project-body">
+            <div class="project-location">📍 有田市</div>
+            <div class="project-name">みかん農家を次世代へ！有田みかんブランドの担い手募集</div>
+            <div class="project-desc">日本一の産地・有田みかんを守り、新たな価値を作り出す仲間を求めています。</div>
+            <div class="project-footer">
+              <div class="project-orgs">
+                <div class="project-org-icon">🍊</div>
+              </div>
+              <a href="#" class="project-btn">
+                詳しく見る
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="project-card reveal delay-3">
+          <div class="project-thumb">
+            <div class="project-thumb-bg" style="background:linear-gradient(135deg,#1A5276,#6A3FA0);">⛩️</div>
+            <div class="project-thumb-overlay"></div>
+            <div class="project-tags">
+              <span class="project-tag">#観光・食</span>
+            </div>
+            <span class="project-status status-soon">近日公開</span>
+          </div>
+          <div class="project-body">
+            <div class="project-location">📍 新宮市</div>
+            <div class="project-name">熊野古道の魅力を世界へ！外国人旅行者向けガイド育成</div>
+            <div class="project-desc">世界遺産・熊野古道を多言語で案内できるガイドを育成するプロジェクトです。</div>
+            <div class="project-footer">
+              <div class="project-orgs">
+                <div class="project-org-icon">🗺️</div>
+                <div class="project-org-icon">🌏</div>
+              </div>
+              <a href="#" class="project-btn">
+                詳しく見る
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="project-card reveal delay-1">
+          <div class="project-thumb">
+            <div class="project-thumb-bg" style="background:linear-gradient(135deg,#C0392B,#E74C3C);">🏘️</div>
+            <div class="project-thumb-overlay"></div>
+            <div class="project-tags">
+              <span class="project-tag">#まちづくり</span>
+            </div>
+            <span class="project-status status-open">募集中</span>
+          </div>
+          <div class="project-body">
+            <div class="project-location">📍 和歌山市</div>
+            <div class="project-name">空き家をシェアオフィスに。地方移住希望者のベースキャンプ化</div>
+            <div class="project-desc">市内の空き家をリノベーションし、地方移住を検討する人の試住の場を作ります。</div>
+            <div class="project-footer">
+              <div class="project-orgs">
+                <div class="project-org-icon">🏠</div>
+              </div>
+              <a href="#" class="project-btn">
+                詳しく見る
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="project-card reveal delay-2">
+          <div class="project-thumb">
+            <div class="project-thumb-bg" style="background:linear-gradient(135deg,#1ABC9C,#16A085);">🌊</div>
+            <div class="project-thumb-overlay"></div>
+            <div class="project-tags">
+              <span class="project-tag">#環境・エネルギー</span>
+            </div>
+            <span class="project-status status-open">募集中</span>
+          </div>
+          <div class="project-body">
+            <div class="project-location">📍 串本町</div>
+            <div class="project-name">サンゴ礁を守れ！串本の海洋保全プロジェクト参加者募集</div>
+            <div class="project-desc">日本最北のサンゴ礁を守るため、ダイバーや研究者と協力して保全活動を行います。</div>
+            <div class="project-footer">
+              <div class="project-orgs">
+                <div class="project-org-icon">🐠</div>
+                <div class="project-org-icon">🔬</div>
+              </div>
+              <a href="#" class="project-btn">
+                詳しく見る
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="project-card reveal delay-3">
+          <div class="project-thumb">
+            <div class="project-thumb-bg" style="background:linear-gradient(135deg,#8E44AD,#D45EA8);">📚</div>
+            <div class="project-thumb-overlay"></div>
+            <div class="project-tags">
+              <span class="project-tag">#教育・文化</span>
+            </div>
+            <span class="project-status status-open">募集中</span>
+          </div>
+          <div class="project-body">
+            <div class="project-location">📍 橋本市</div>
+            <div class="project-name">山間部の小学校でプログラミング教育！ICT教師ボランティア</div>
+            <div class="project-desc">都市部のITエンジニアが月1回訪問し、子どもたちにデジタルの力を届けます。</div>
+            <div class="project-footer">
+              <div class="project-orgs">
+                <div class="project-org-icon">🏫</div>
+              </div>
+              <a href="#" class="project-btn">
+                詳しく見る
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== STORIES MARQUEE ===== -->
+  <section class="stories-strip" id="stories">
+    <div class="stories-header">
+      <div class="section-eyebrow reveal">ACTIVITY REPORT</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;">
+        <h2 class="section-title reveal delay-1" style="color:white;">参加者の声</h2>
+        <a href="/reports" class="link-more reveal" style="color:var(--gold);">
+          全レポートを見る
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div style="overflow:hidden;">
+      <div class="stories-marquee" id="marquee">
+        <!-- Stories (duplicated for infinite loop) -->
+        <div class="story-card">
+          <div class="story-img" style="background:linear-gradient(135deg,#F47B3F,#E8B840);">👩‍🌾</div>
+          <div class="story-body">
+            <div class="story-name">田中 さくら さん</div>
+            <div class="story-role">東京 → 有田市 | 農業</div>
+            <div class="story-quote">「週末だけ農業体験から始めて、気づいたら移住していました。人の温かさに惹かれました。」</div>
+          </div>
+        </div>
+        <div class="story-card">
+          <div class="story-img" style="background:linear-gradient(135deg,#3A8A5C,#1A5276);">👨‍💻</div>
+          <div class="story-body">
+            <div class="story-name">山本 大輝 さん</div>
+            <div class="story-role">大阪 | ITエンジニア</div>
+            <div class="story-quote">「リモートワークしながら月2回橋本の学校でプログラミングを教えています。子どもたちの笑顔が最高！」</div>
+          </div>
+        </div>
+        <div class="story-card">
+          <div class="story-img" style="background:linear-gradient(135deg,#1A5276,#8E44AD);">👩‍🍳</div>
+          <div class="story-body">
+            <div class="story-name">松本 由美 さん</div>
+            <div class="story-role">兵庫 | フードコーディネーター</div>
+            <div class="story-quote">「梅干し・みかん・鮎。和歌山の食材は宝の山。地元の人と一緒にレシピを開発しています。」</div>
+          </div>
+        </div>
+        <div class="story-card">
+          <div class="story-img" style="background:linear-gradient(135deg,#C0392B,#F47B3F);">🧑‍🎨</div>
+          <div class="story-body">
+            <div class="story-name">石川 隼人 さん</div>
+            <div class="story-role">東京 | デザイナー</div>
+            <div class="story-quote">「熊野の文化に惹かれてWEBサイトのデザインをお手伝い。今は田辺市の観光ブランディングも担当しています。」</div>
+          </div>
+        </div>
+        <div class="story-card">
+          <div class="story-img" style="background:linear-gradient(135deg,#1ABC9C,#3A8A5C);">👨‍🔬</div>
+          <div class="story-body">
+            <div class="story-name">鈴木 健一 さん</div>
+            <div class="story-role">京都 | 大学院生（海洋学）</div>
+            <div class="story-quote">「串本のサンゴ礁調査に参加。研究フィールドを見つけただけでなく、素敵な仲間にも出会えました。」</div>
+          </div>
+        </div>
+        <div class="story-card">
+          <div class="story-img" style="background:linear-gradient(135deg,#E8B840,#F47B3F);">👩‍⚕️</div>
+          <div class="story-body">
+            <div class="story-name">中村 あかね さん</div>
+            <div class="story-role">大阪 | 看護師</div>
+            <div class="story-quote">「高野山のふもとで健康相談会のお手伝いを。都会では味わえない充実感があります。」</div>
+          </div>
+        </div>
+        <!-- Duplicate for seamless loop -->
+        <div class="story-card">
+          <div class="story-img" style="background:linear-gradient(135deg,#F47B3F,#E8B840);">👩‍🌾</div>
+          <div class="story-body">
+            <div class="story-name">田中 さくら さん</div>
+            <div class="story-role">東京 → 有田市 | 農業</div>
+            <div class="story-quote">「週末だけ農業体験から始めて、気づいたら移住していました。人の温かさに惹かれました。」</div>
+          </div>
+        </div>
+        <div class="story-card">
+          <div class="story-img" style="background:linear-gradient(135deg,#3A8A5C,#1A5276);">👨‍💻</div>
+          <div class="story-body">
+            <div class="story-name">山本 大輝 さん</div>
+            <div class="story-role">大阪 | ITエンジニア</div>
+            <div class="story-quote">「リモートワークしながら月2回橋本の学校でプログラミングを教えています。子どもたちの笑顔が最高！」</div>
+          </div>
+        </div>
+        <div class="story-card">
+          <div class="story-img" style="background:linear-gradient(135deg,#1A5276,#8E44AD);">👩‍🍳</div>
+          <div class="story-body">
+            <div class="story-name">松本 由美 さん</div>
+            <div class="story-role">兵庫 | フードコーディネーター</div>
+            <div class="story-quote">「梅干し・みかん・鮎。和歌山の食材は宝の山。地元の人と一緒にレシピを開発しています。」</div>
+          </div>
+        </div>
+        <div class="story-card">
+          <div class="story-img" style="background:linear-gradient(135deg,#C0392B,#F47B3F);">🧑‍🎨</div>
+          <div class="story-body">
+            <div class="story-name">石川 隼人 さん</div>
+            <div class="story-role">東京 | デザイナー</div>
+            <div class="story-quote">「熊野の文化に惹かれてWEBサイトのデザインをお手伝い。今は田辺市の観光ブランディングも担当しています。」</div>
+          </div>
+        </div>
+        <div class="story-card">
+          <div class="story-img" style="background:linear-gradient(135deg,#1ABC9C,#3A8A5C);">👨‍🔬</div>
+          <div class="story-body">
+            <div class="story-name">鈴木 健一 さん</div>
+            <div class="story-role">京都 | 大学院生（海洋学）</div>
+            <div class="story-quote">「串本のサンゴ礁調査に参加。研究フィールドを見つけただけでなく、素敵な仲間にも出会えました。」</div>
+          </div>
+        </div>
+        <div class="story-card">
+          <div class="story-img" style="background:linear-gradient(135deg,#E8B840,#F47B3F);">👩‍⚕️</div>
+          <div class="story-body">
+            <div class="story-name">中村 あかね さん</div>
+            <div class="story-role">大阪 | 看護師</div>
+            <div class="story-quote">「高野山のふもとで健康相談会のお手伝いを。都会では味わえない充実感があります。」</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== NEWS ===== -->
+  <section class="news" id="news">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <div class="section-eyebrow reveal">お知らせ</div>
+          <h2 class="section-title reveal delay-1">最新情報</h2>
+        </div>
+        <a href="/news" class="link-more reveal">
+          すべて見る
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="news-list">
+        <div class="news-item reveal">
+          <div class="news-date">2026.03.15</div>
+          <span class="news-cat news-cat-event">イベント</span>
+          <div class="news-title">【3/28開催】わかやまFUNBASE交流イベント in 大阪 参加者募集中！</div>
+          <div class="news-arrow">→</div>
+        </div>
+        <div class="news-item reveal delay-1">
+          <div class="news-date">2026.03.10</div>
+          <span class="news-cat news-cat-report">レポート</span>
+          <div class="news-title">田辺市・備長炭プロジェクトの活動レポートを公開しました</div>
+          <div class="news-arrow">→</div>
+        </div>
+        <div class="news-item reveal delay-2">
+          <div class="news-date">2026.03.05</div>
+          <span class="news-cat news-cat-info">お知らせ</span>
+          <div class="news-title">新プロジェクト5件を追加しました（有田市・串本町・新宮市ほか）</div>
+          <div class="news-arrow">→</div>
+        </div>
+        <div class="news-item reveal delay-3">
+          <div class="news-date">2026.02.28</div>
+          <span class="news-cat news-cat-event">イベント</span>
+          <div class="news-title">【終了】WAKAYAMA FUNBASEオンライン説明会 2月開催回 終了しました</div>
+          <div class="news-arrow">→</div>
+        </div>
+        <div class="news-item reveal delay-4">
+          <div class="news-date">2026.02.20</div>
+          <span class="news-cat news-cat-info">お知らせ</span>
+          <div class="news-title">サイトリニューアルのお知らせ。より使いやすくなりました！</div>
+          <div class="news-arrow">→</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== CTA ===== -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-grid">
+        <div class="cta-card cta-card-primary reveal-left">
+          <div class="cta-icon">🤝</div>
+          <div class="cta-title">まずは相談してみませんか？</div>
+          <div class="cta-desc">「どんな関わり方ができるか分からない」という方も大歓迎。コーディネーターが一緒に考えます。</div>
+          <a href="/consult" class="cta-btn" style="color:var(--orange);">
+            無料相談する
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <div class="cta-card cta-card-secondary reveal-right">
+          <div class="cta-icon">✨</div>
+          <div class="cta-title">会員登録して<br>和歌山と出会おう</div>
+          <div class="cta-desc">無料登録でプロジェクトへの応募・メッセージ・イベント参加が可能になります。</div>
+          <a href="/register" class="cta-btn" style="color:var(--navy);">
+            無料で始める
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="footer-main">
+      <div class="footer-brand">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          <div class="logo-mark">WF</div>
+          <div>
+            <div class="logo-text" style="color:white;">WAKAYAMA <span>FUN</span>BASE</div>
+            <span class="logo-sub">地域と出会い、人とつながる</span>
+          </div>
+        </div>
+        <p>和歌山県の地域と都市部の人材をつなぐ関係人口創出プラットフォームです。</p>
+        <div class="footer-sns">
+          <a href="https://www.instagram.com" class="footer-sns-btn" target="_blank" rel="noopener">📷</a>
+          <a href="#" class="footer-sns-btn">🐦</a>
+          <a href="#" class="footer-sns-btn">▶</a>
+        </div>
+      </div>
+
+      <div class="footer-links-grid">
+        <div>
+          <div class="footer-links-title">Platform</div>
+          <ul class="footer-links">
+            <li><a href="/about">FUNBASEとは</a></li>
+            <li><a href="/projects">プロジェクト一覧</a></li>
+            <li><a href="/organizations">地域の人・団体</a></li>
+            <li><a href="/reports">活動レポート</a></li>
+            <li><a href="/events">イベント</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-links-title">Support</div>
+          <ul class="footer-links">
+            <li><a href="/register">新規会員登録</a></li>
+            <li><a href="/login">ログイン</a></li>
+            <li><a href="/consult">相談する</a></li>
+            <li><a href="/faq">よくある質問</a></li>
+            <li><a href="/contact">お問い合わせ</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-links-title">Legal</div>
+          <ul class="footer-links">
+            <li><a href="/privacy">プライバシーポリシー</a></li>
+            <li><a href="/terms">利用規約</a></li>
+            <li><a href="/sitemap">サイトマップ</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 わかやまFUNBASE. All Rights Reserved.</div>
+      <div class="footer-policy">
+        <a href="/privacy">プライバシーポリシー</a>
+        <a href="/terms">利用規約</a>
+        <a href="/contact">お問い合わせ</a>
+      </div>
+    </div>
+  </footer>
+
+
+  <script>
+    // ===== Header scroll effect =====
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    // ===== Scroll reveal =====
+    const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    revealEls.forEach(el => observer.observe(el));
+
+    // ===== Smooth scroll for nav links =====
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+      link.addEventListener('click', e => {
+        const target = document.querySelector(link.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // ===== Counter animation =====
+    function animateCounter(el, target, suffix = '') {
+      let current = 0;
+      const step = target / 60;
+      const timer = setInterval(() => {
+        current = Math.min(current + step, target);
+        el.textContent = Math.round(current) + suffix;
+        if (current >= target) clearInterval(timer);
+      }, 16);
+    }
+
+    // Trigger counter when stats come into view
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const nums = entry.target.querySelectorAll('.hero-stat-num');
+          nums.forEach(num => {
+            const text = num.textContent;
+            const match = text.match(/^(\d+)/);
+            if (match) {
+              const target = parseInt(match[1]);
+              const suffix = text.replace(/^\d+/, '');
+              const spanColor = num.querySelector('span');
+              animateCounter(num, target, '');
+              if (spanColor) {
+                setTimeout(() => {
+                  num.innerHTML = Math.round(target) + `<span style="color:var(--orange)">${suffix}</span>`;
+                }, 1000);
+              }
+            }
+          });
+          statsObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    const heroStats = document.querySelector('.hero-stats');
+    if (heroStats) statsObserver.observe(heroStats);
+
+    // ===== Project card tilt effect =====
+    document.querySelectorAll('.project-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        card.style.transform = `translateY(-8px) rotateX(${-y * 6}deg) rotateY(${x * 6}deg)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+        card.style.transition = 'all 0.4s ease';
+      });
+      card.addEventListener('mouseenter', () => {
+        card.style.transition = 'box-shadow 0.35s ease';
+      });
+    });
+
+    // ===== Category card hover ripple =====
+    document.querySelectorAll('.cat-card').forEach(card => {
+      card.addEventListener('click', e => {
+        const ripple = document.createElement('div');
+        const rect = card.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height) * 2;
+        ripple.style.cssText = `
+          position:absolute;
+          border-radius:50%;
+          background:rgba(244,123,63,0.15);
+          width:${size}px;height:${size}px;
+          left:${e.clientX - rect.left - size/2}px;
+          top:${e.clientY - rect.top - size/2}px;
+          animation:ripple-out 0.6s ease forwards;
+          pointer-events:none;
+          z-index:0;
+        `;
+        card.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+      });
+    });
+
+    // Ripple animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes ripple-out {
+        from { transform: scale(0); opacity: 1; }
+        to { transform: scale(1); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>
