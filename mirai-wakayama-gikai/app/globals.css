@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fbfaf7;
+  --foreground: #1a1f2b;
+
+  /* Wakayama accent colors */
+  --color-wakayama-orange: #e8873a;        /* みかんオレンジ */
+  --color-wakayama-orange-dark: #b7611e;
+  --color-wakayama-orange-soft: #fff2e2;
+  --color-wakayama-blue: #1c6ea4;           /* 海のブルー */
+  --color-wakayama-blue-dark: #0f4c7a;
+  --color-wakayama-blue-soft: #e7f1f8;
+  --color-wakayama-green: #3f8a5a;          /* 熊野の森 */
+  --color-wakayama-ivory: #fbfaf7;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-noto-sans-jp), "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --color-wakayama-orange: var(--color-wakayama-orange);
+  --color-wakayama-orange-dark: var(--color-wakayama-orange-dark);
+  --color-wakayama-orange-soft: var(--color-wakayama-orange-soft);
+  --color-wakayama-blue: var(--color-wakayama-blue);
+  --color-wakayama-blue-dark: var(--color-wakayama-blue-dark);
+  --color-wakayama-blue-soft: var(--color-wakayama-blue-soft);
+  --color-wakayama-green: var(--color-wakayama-green);
+  --color-wakayama-ivory: var(--color-wakayama-ivory);
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Utility for subtle backdrop pattern */
+.bg-grid-faint {
+  background-image:
+    linear-gradient(to right, rgba(28, 110, 164, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(28, 110, 164, 0.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
