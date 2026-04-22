@@ -5,7 +5,6 @@ import {
   MapPin,
   Phone,
   Crown,
-  Radar as RadarIcon,
   Sparkles,
   MessageSquare,
   AlertCircle,
@@ -18,7 +17,6 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import { TopicRadarChart } from "@/components/charts/topic-radar-chart";
 import { members, type Member, type ActivityItem } from "@/data/mock";
 
 export function generateStaticParams() {
@@ -50,23 +48,79 @@ function formatJpDate(iso: string) {
   return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日(${weekday})`;
 }
 
-function TagCloud({ tags }: { tags: Member["tags"] }) {
-  const maxWeight = Math.max(...tags.map((t) => t.weight));
+// 決定論的な疑似乱数（議員ごとに安定した配置にする）
+function seededRand(seed: number) {
+  let s = seed >>> 0;
+  return () => {
+    s = (s * 1664525 + 1013904223) >>> 0;
+    return s / 0xffffffff;
+  };
+}
+
+function hashString(str: string) {
+  let h = 2166136261 >>> 0;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+function WordCloud({
+  tags,
+  seed,
+}: {
+  tags: Member["tags"];
+  seed: string;
+}) {
+  const sorted = [...tags].sort((a, b) => b.weight - a.weight);
+  const maxW = Math.max(...sorted.map((t) => t.weight));
+  const minW = Math.min(...sorted.map((t) => t.weight));
+  const span = Math.max(1, maxW - minW);
+  const rand = seededRand(hashString(seed));
+
+  // 配色：ウエイト順に和歌山カラーのパレットから循環
+  const palette = [
+    "text-wakayama-orange-dark",
+    "text-wakayama-blue-dark",
+    "text-emerald-700",
+    "text-rose-700",
+    "text-amber-700",
+    "text-indigo-700",
+    "text-teal-700",
+    "text-fuchsia-700",
+  ];
+
   return (
-    <div className="flex flex-wrap gap-2">
-      {tags.map((t) => {
-        const scale = 0.85 + (t.weight / maxWeight) * 0.7;
-        const opacity = 0.55 + (t.weight / maxWeight) * 0.45;
+    <div className="relative min-h-[220px] w-full flex flex-wrap items-center justify-center gap-x-4 gap-y-2 px-2 py-4 leading-none">
+      {sorted.map((t, i) => {
+        const norm = (t.weight - minW) / span; // 0..1
+        // 大きさ: 大ウエイトは 2.8rem まで、小は 0.95rem
+        const fontSize = 0.95 + norm * 1.85;
+        // 重要度で太さ
+        const weightClass =
+          norm > 0.7
+            ? "font-black"
+            : norm > 0.4
+              ? "font-extrabold"
+              : "font-semibold";
+        // 軽い回転で雲感を出す（決定論的）
+        const rot = (rand() - 0.5) * 10;
+        // 垂直方向のブレ
+        const ty = (rand() - 0.5) * 4;
+        const color = palette[i % palette.length];
         return (
           <span
             key={t.label}
-            className="inline-flex items-center rounded-full bg-wakayama-blue-soft px-3 py-1 font-semibold text-wakayama-blue-dark"
+            className={`whitespace-nowrap tracking-tight ${weightClass} ${color}`}
             style={{
-              fontSize: `${scale}rem`,
-              opacity,
+              fontSize: `${fontSize}rem`,
+              transform: `translateY(${ty}px) rotate(${rot}deg)`,
+              textShadow: "0 1px 0 rgba(255,255,255,0.6)",
+              lineHeight: 1.05,
             }}
           >
-            #{t.label}
+            {t.label}
           </span>
         );
       })}
@@ -154,40 +208,27 @@ export default async function MemberDetailPage({ params }: PageProps) {
         <AlertCircle size={14} className="mt-0.5 shrink-0" />
         <p>
           基本情報（氏名・年齢・選挙区・会派・事務所）は和歌山県議会議員名簿（令和8年4月1日現在）に基づく公開情報です。
-          <strong>発言傾向レーダー／タグクラウド／活動要約は、公開議事録をAI分析することを想定したサンプルデモデータ</strong>
+          <strong>注力テーマ ワードクラウド／活動要約は、公開議事録をAI分析することを想定したサンプルデモデータ</strong>
           であり、実際の発言内容とは一致しません。
         </p>
       </div>
 
-      {/* Topic / Tag */}
-      <section className="mt-8 grid gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <RadarIcon size={18} className="text-wakayama-orange" />
-              発言傾向レーダー（サンプル）
-            </CardTitle>
-            <CardDescription>
-              委員会・本会議での発言内容をAI分類して相対的にスコアリング（デモ）。
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <TopicRadarChart data={member.topics} />
-          </CardContent>
-        </Card>
-
+      {/* 注力テーマ ワードクラウド */}
+      <section className="mt-8">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Sparkles size={18} className="text-wakayama-orange" />
-              注力テーマ タグクラウド（サンプル）
+              注力テーマ ワードクラウド（サンプル）
             </CardTitle>
             <CardDescription>
-              選挙区・会派特性から想起される代表的テーマを頻度で表示（デモ）。
+              この議員がどんな話題を取り上げているかを、大きさ・太さで視覚化（デモ）。
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <TagCloud tags={member.tags} />
+            <div className="rounded-xl bg-gradient-to-br from-slate-50 to-wakayama-blue-soft/40 ring-1 ring-slate-200/70">
+              <WordCloud tags={member.tags} seed={member.id} />
+            </div>
           </CardContent>
         </Card>
       </section>
