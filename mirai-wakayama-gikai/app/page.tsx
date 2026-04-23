@@ -10,6 +10,7 @@ import {
   Users,
   Sparkles,
   Newspaper,
+  ChevronDown,
 } from "lucide-react";
 import {
   Card,
@@ -202,8 +203,11 @@ export default function HomePage() {
             </p>
           </div>
 
-          <ol className="relative border-l-2 border-slate-200 ml-2 space-y-5">
-            {schedule.map((item) => {
+          {(() => {
+            const PREVIEW_COUNT = 3;
+            const previewItems = schedule.slice(0, PREVIEW_COUNT);
+            const restItems = schedule.slice(PREVIEW_COUNT);
+            const renderItem = (item: (typeof schedule)[number]) => {
               const d = formatDate(item.date);
               const color = categoryColor[item.category] ?? "bg-slate-400";
               return (
@@ -213,8 +217,8 @@ export default function HomePage() {
                       item.isToday
                         ? "ring-wakayama-orange"
                         : item.past
-                        ? "ring-slate-200"
-                        : "ring-slate-300"
+                          ? "ring-slate-200"
+                          : "ring-slate-300"
                     } ${item.past ? "bg-slate-300" : color}`}
                   />
                   <div
@@ -222,8 +226,8 @@ export default function HomePage() {
                       item.isToday
                         ? "border-wakayama-orange/40 bg-wakayama-orange-soft"
                         : item.past
-                        ? "border-slate-200 bg-slate-50/70"
-                        : "border-slate-200 bg-white hover:border-slate-300"
+                          ? "border-slate-200 bg-slate-50/70"
+                          : "border-slate-200 bg-white hover:border-slate-300"
                     }`}
                   >
                     <div className="flex flex-wrap items-start justify-between gap-3">
@@ -240,15 +244,13 @@ export default function HomePage() {
                               item.category === "本会議"
                                 ? "default"
                                 : item.category === "常任委員会"
-                                ? "secondary"
-                                : "outline"
+                                  ? "secondary"
+                                  : "outline"
                             }
                           >
                             {item.category}
                           </Badge>
-                          {item.isToday && (
-                            <Badge variant="live">本日</Badge>
-                          )}
+                          {item.isToday && <Badge variant="live">本日</Badge>}
                           {item.past && !item.isToday && (
                             <Badge variant="muted">済</Badge>
                           )}
@@ -264,8 +266,36 @@ export default function HomePage() {
                   </div>
                 </li>
               );
-            })}
-          </ol>
+            };
+
+            return (
+              <>
+                <ol className="relative border-l-2 border-slate-200 ml-2 space-y-5">
+                  {previewItems.map(renderItem)}
+                </ol>
+
+                {restItems.length > 0 && (
+                  <details className="group mt-5">
+                    <summary className="list-none cursor-pointer inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 h-10 text-sm font-semibold text-slate-700 hover:border-wakayama-orange hover:text-wakayama-orange-dark transition-colors select-none">
+                      <ChevronDown
+                        size={16}
+                        className="transition-transform group-open:rotate-180"
+                      />
+                      <span className="group-open:hidden">
+                        残り{restItems.length}件の日程を表示
+                      </span>
+                      <span className="hidden group-open:inline">
+                        折りたたむ
+                      </span>
+                    </summary>
+                    <ol className="relative border-l-2 border-slate-200 ml-2 mt-5 space-y-5">
+                      {restItems.map(renderItem)}
+                    </ol>
+                  </details>
+                )}
+              </>
+            );
+          })()}
         </div>
       </section>
 
