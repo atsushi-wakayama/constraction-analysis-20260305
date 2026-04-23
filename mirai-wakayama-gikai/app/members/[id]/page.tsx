@@ -17,7 +17,6 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import { WordCloud } from "@/components/charts/word-cloud";
 import { members, type Member, type ActivityItem } from "@/data/mock";
 
 export function generateStaticParams() {
@@ -134,22 +133,31 @@ export default async function MemberDetailPage({ params }: PageProps) {
         </p>
       </div>
 
-      {/* 注力テーマ ワードクラウド */}
+      {/* 注力テーマ ハッシュタグ */}
       <section className="mt-8">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Sparkles size={18} className="text-wakayama-orange" />
-              注力テーマ ワードクラウド（サンプル）
+              注力テーマ（サンプル）
             </CardTitle>
             <CardDescription>
-              この議員がどんな話題を取り上げているかを、大きさ・太さで視覚化（デモ）。
+              この議員がよく取り上げる話題のハッシュタグ（デモ）。
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="rounded-xl bg-gradient-to-br from-slate-50 to-wakayama-blue-soft/40 ring-1 ring-slate-200/70 p-3 overflow-hidden">
-              <WordCloud tags={member.tags} seed={member.id} height={360} />
-            </div>
+            <ul className="flex flex-wrap gap-2">
+              {[...member.tags]
+                .sort((a, b) => b.weight - a.weight)
+                .map((t) => (
+                  <li
+                    key={t.label}
+                    className="inline-flex items-center rounded-full bg-wakayama-blue-soft/60 px-3 py-1 text-sm font-semibold text-wakayama-blue-dark ring-1 ring-wakayama-blue/20"
+                  >
+                    #{t.label}
+                  </li>
+                ))}
+            </ul>
           </CardContent>
         </Card>
       </section>
