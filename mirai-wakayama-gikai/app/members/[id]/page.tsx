@@ -17,6 +17,7 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
+import { WordCloud } from "@/components/charts/word-cloud";
 import { members, type Member, type ActivityItem } from "@/data/mock";
 
 export function generateStaticParams() {
@@ -46,86 +47,6 @@ function formatJpDate(iso: string) {
   const d = new Date(iso);
   const weekday = ["日", "月", "火", "水", "木", "金", "土"][d.getDay()];
   return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日(${weekday})`;
-}
-
-// 決定論的な疑似乱数（議員ごとに安定した配置にする）
-function seededRand(seed: number) {
-  let s = seed >>> 0;
-  return () => {
-    s = (s * 1664525 + 1013904223) >>> 0;
-    return s / 0xffffffff;
-  };
-}
-
-function hashString(str: string) {
-  let h = 2166136261 >>> 0;
-  for (let i = 0; i < str.length; i++) {
-    h ^= str.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  return h >>> 0;
-}
-
-function WordCloud({
-  tags,
-  seed,
-}: {
-  tags: Member["tags"];
-  seed: string;
-}) {
-  const sorted = [...tags].sort((a, b) => b.weight - a.weight);
-  const maxW = Math.max(...sorted.map((t) => t.weight));
-  const minW = Math.min(...sorted.map((t) => t.weight));
-  const span = Math.max(1, maxW - minW);
-  const rand = seededRand(hashString(seed));
-
-  // 配色：ウエイト順に和歌山カラーのパレットから循環
-  const palette = [
-    "text-wakayama-orange-dark",
-    "text-wakayama-blue-dark",
-    "text-emerald-700",
-    "text-rose-700",
-    "text-amber-700",
-    "text-indigo-700",
-    "text-teal-700",
-    "text-fuchsia-700",
-  ];
-
-  return (
-    <div className="relative min-h-[220px] w-full flex flex-wrap items-center justify-center gap-x-4 gap-y-2 px-2 py-4 leading-none">
-      {sorted.map((t, i) => {
-        const norm = (t.weight - minW) / span; // 0..1
-        // 大きさ: 大ウエイトは 2.8rem まで、小は 0.95rem
-        const fontSize = 0.95 + norm * 1.85;
-        // 重要度で太さ
-        const weightClass =
-          norm > 0.7
-            ? "font-black"
-            : norm > 0.4
-              ? "font-extrabold"
-              : "font-semibold";
-        // 軽い回転で雲感を出す（決定論的）
-        const rot = (rand() - 0.5) * 10;
-        // 垂直方向のブレ
-        const ty = (rand() - 0.5) * 4;
-        const color = palette[i % palette.length];
-        return (
-          <span
-            key={t.label}
-            className={`whitespace-nowrap tracking-tight ${weightClass} ${color}`}
-            style={{
-              fontSize: `${fontSize}rem`,
-              transform: `translateY(${ty}px) rotate(${rot}deg)`,
-              textShadow: "0 1px 0 rgba(255,255,255,0.6)",
-              lineHeight: 1.05,
-            }}
-          >
-            {t.label}
-          </span>
-        );
-      })}
-    </div>
-  );
 }
 
 export default async function MemberDetailPage({ params }: PageProps) {
@@ -226,8 +147,8 @@ export default async function MemberDetailPage({ params }: PageProps) {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="rounded-xl bg-gradient-to-br from-slate-50 to-wakayama-blue-soft/40 ring-1 ring-slate-200/70">
-              <WordCloud tags={member.tags} seed={member.id} />
+            <div className="rounded-xl bg-gradient-to-br from-slate-50 to-wakayama-blue-soft/40 ring-1 ring-slate-200/70 p-3 overflow-hidden">
+              <WordCloud tags={member.tags} seed={member.id} height={360} />
             </div>
           </CardContent>
         </Card>
