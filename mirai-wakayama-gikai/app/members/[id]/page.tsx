@@ -170,36 +170,49 @@ export default async function MemberDetailPage({ params }: PageProps) {
             活動サマリー（サンプルAI要約）
           </h2>
         </div>
-        <ol className="relative border-l-2 border-slate-200 ml-2 space-y-5">
-          {member.activities.map((a) => (
-            <li key={a.date + a.title} className="pl-6 relative">
-              <span className="absolute -left-[9px] top-3 h-4 w-4 rounded-full border-2 border-white ring-2 ring-wakayama-orange/60 bg-wakayama-orange" />
-              <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
-                <div className="flex flex-wrap items-center gap-2 text-xs">
-                  <span className="font-semibold text-slate-900">
-                    {formatJpDate(a.date)}
-                  </span>
-                  <span className="text-slate-400">·</span>
-                  <span className="text-slate-700">{a.venue}</span>
-                  <span
-                    className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold ${activityTypeStyle[a.type]}`}
-                  >
-                    {a.type}
-                  </span>
-                </div>
-                <p className="mt-2 text-base font-semibold text-slate-900">
-                  {a.title}
-                </p>
-                <p className="mt-1.5 text-sm text-slate-600 leading-relaxed">
-                  {a.summary}
-                </p>
-              </div>
-            </li>
-          ))}
-        </ol>
-        <p className="mt-3 text-[11px] text-slate-400">
-          ※ 本セクションはサンプルデータです。実運用時は議事録検索システムにリンクします。
-        </p>
+        {member.activities.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center">
+            <p className="text-sm text-slate-500">
+              xxx
+            </p>
+            <p className="mt-1 text-xs text-slate-400">
+              現時点で対象会議の議事録に基づく発言記録はありません。
+            </p>
+          </div>
+        ) : (
+          <>
+            <ol className="relative border-l-2 border-slate-200 ml-2 space-y-5">
+              {member.activities.map((a) => (
+                <li key={a.date + a.title} className="pl-6 relative">
+                  <span className="absolute -left-[9px] top-3 h-4 w-4 rounded-full border-2 border-white ring-2 ring-wakayama-orange/60 bg-wakayama-orange" />
+                  <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+                    <div className="flex flex-wrap items-center gap-2 text-xs">
+                      <span className="font-semibold text-slate-900">
+                        {formatJpDate(a.date)}
+                      </span>
+                      <span className="text-slate-400">·</span>
+                      <span className="text-slate-700">{a.venue}</span>
+                      <span
+                        className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold ${activityTypeStyle[a.type]}`}
+                      >
+                        {a.type}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-base font-semibold text-slate-900">
+                      {a.title}
+                    </p>
+                    <p className="mt-1.5 text-sm text-slate-600 leading-relaxed">
+                      {a.summary}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-3 text-[11px] text-slate-400">
+              ※ 本セクションはサンプルデータです。実運用時は議事録検索システムにリンクします。
+            </p>
+          </>
+        )}
       </section>
     </div>
   );
