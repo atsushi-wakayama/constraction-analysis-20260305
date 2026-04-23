@@ -146,18 +146,27 @@ export default async function MemberDetailPage({ params }: PageProps) {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ul className="flex flex-wrap gap-2">
-              {[...member.tags]
-                .sort((a, b) => b.weight - a.weight)
-                .map((t) => (
-                  <li
-                    key={t.label}
-                    className="inline-flex items-center rounded-full bg-wakayama-blue-soft/60 px-3 py-1 text-sm font-semibold text-wakayama-blue-dark ring-1 ring-wakayama-blue/20"
-                  >
-                    #{t.label}
-                  </li>
-                ))}
-            </ul>
+            {member.tags.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center">
+                <p className="text-sm text-slate-500">xxx</p>
+                <p className="mt-1 text-xs text-slate-400">
+                  現時点で対象会議の議事録に基づくテーマ分析はありません。
+                </p>
+              </div>
+            ) : (
+              <ul className="flex flex-wrap gap-2">
+                {[...member.tags]
+                  .sort((a, b) => b.weight - a.weight)
+                  .map((t) => (
+                    <li
+                      key={t.label}
+                      className="inline-flex items-center rounded-full bg-wakayama-blue-soft/60 px-3 py-1 text-sm font-semibold text-wakayama-blue-dark ring-1 ring-wakayama-blue/20"
+                    >
+                      #{t.label}
+                    </li>
+                  ))}
+              </ul>
+            )}
           </CardContent>
         </Card>
       </section>

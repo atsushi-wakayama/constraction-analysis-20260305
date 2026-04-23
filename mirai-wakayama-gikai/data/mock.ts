@@ -2309,8 +2309,8 @@ export const members: Member[] = seeds.map((s) => ({
   age: s.age,
   role: s.role,
   office: s.office,
-  topics: realTopics[s.name] ?? makeTopics(s.district, s.party, s.age),
-  tags: realTags[s.name] ?? makeTags(s.district, s.party),
+  topics: realActivities[s.name] ? (realTopics[s.name] ?? makeTopics(s.district, s.party, s.age)) : [],
+  tags: realActivities[s.name] ? (realTags[s.name] ?? makeTags(s.district, s.party)) : [],
   activities: realActivities[s.name] ?? [],
   bio: bioOf(s),
 }));
