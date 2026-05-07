@@ -24,19 +24,24 @@ export type ScheduleItem = {
   title: string;
   category: "本会議" | "常任委員会" | "特別委員会" | "議会運営委員会" | "その他";
   description: string;
-  isToday?: boolean;
-  past?: boolean;
 };
+
+// 各定例会の会期ウィンドウ（開会日〜閉会日）。カウントダウン算出に使用。
+export type SessionWindow = {
+  name: string;
+  open: string;  // 開会日 (本会議初日)
+  close: string; // 閉会日
+};
+
+export const sessionWindows: SessionWindow[] = [
+  { name: "令和8年6月定例会", open: "2026-06-09", close: "2026-06-26" },
+  { name: "令和8年9月定例会", open: "2026-09-08", close: "2026-09-29" },
+  { name: "令和8年12月定例会", open: "2026-12-02", close: "2026-12-18" },
+  { name: "令和9年2月定例会", open: "2027-02-15", close: "2027-03-09" },
+];
 
 // 令和8年度 定例会日程案（nitteiR08.pdf より整形・主要日程のみ抜粋）
 export const schedule: ScheduleItem[] = [
-  {
-    date: "2026-04-19",
-    title: "（閉会中）本日",
-    category: "その他",
-    description: "閉会中。令和8年6月定例会に向けた調整期間。",
-    isToday: true,
-  },
   // 6月定例会
   {
     date: "2026-06-02",

@@ -26,11 +26,29 @@ import { PriorityBarChart } from "@/components/charts/priority-bar-chart";
 import {
   assemblyStatus,
   schedule,
+  sessionWindows,
   budgetPicks,
   budgetBreakdown,
   priorityPolicies,
   recentMovements,
 } from "@/data/mock";
+
+export const dynamic = "force-dynamic";
+
+function startOfDay(d: Date) {
+  const x = new Date(d);
+  x.setHours(0, 0, 0, 0);
+  return x;
+}
+function diffDays(from: Date, to: Date) {
+  return Math.round(
+    (startOfDay(to).getTime() - startOfDay(from).getTime()) /
+      (1000 * 60 * 60 * 24),
+  );
+}
+function isSameDay(a: Date, b: Date) {
+  return startOfDay(a).getTime() === startOfDay(b).getTime();
+}
 
 const categoryColor: Record<string, string> = {
   本会議: "bg-wakayama-orange",
@@ -53,13 +71,48 @@ function formatDate(iso: string) {
 export default function HomePage() {
   const totalBudget = budgetBreakdown.reduce((s, b) => s + b.value, 0);
 
-  const isInSession = assemblyStatus.status === "in_session";
-  const statusLabel =
-    assemblyStatus.status === "in_session"
-      ? "ただいま 本会議中"
-      : assemblyStatus.status === "recess"
-      ? "休会中"
-      : "閉会中";
+  // 今日（サーバー時刻）を基準に会期状態とカウントダウンを動的算出
+  const today = new Date();
+  const currentSession = sessionWindows.find((w) => {
+    const o = new Date(w.open);
+    const c = new Date(w.close);
+    return startOfDay(today) >= startOfDay(o) && startOfDay(today) <= startOfDay(c);
+  });
+  const nextSession = sessionWindows.find(
+    (w) => startOfDay(new Date(w.open)) > startOfDay(today),
+  );
+
+  const isInSession = !!currentSession;
+  const statusLabel = isInSession ? "ただいま 開会中" : "閉会中";
+
+  // カウントダウン表示用ラベル
+  let countdownTitle = "次回";
+  let countdownText = assemblyStatus.todayAgenda;
+  if (currentSession) {
+    const closeDate = new Date(currentSession.close);
+    if (isSameDay(today, new Date(currentSession.open))) {
+      countdownTitle = `${currentSession.name}`;
+      countdownText = "本日 開会";
+    } else if (isSameDay(today, closeDate)) {
+      countdownTitle = `${currentSession.name}`;
+      countdownText = "本日 閉会";
+    } else {
+      const days = diffDays(today, closeDate);
+      countdownTitle = `${currentSession.name} 開会中`;
+      countdownText = `閉会まで あと ${days} 日`;
+    }
+  } else if (nextSession) {
+    const openDate = new Date(nextSession.open);
+    const days = diffDays(today, openDate);
+    countdownTitle = `次の本会議（${nextSession.name} 初日）まで`;
+    countdownText = days === 0 ? "本日 開会" : `あと ${days} 日`;
+  }
+
+  // Schedule: 過去の項目は非表示、今日以降のみ
+  const todayStart = startOfDay(today);
+  const upcomingSchedule = schedule.filter(
+    (s) => startOfDay(new Date(s.date)).getTime() >= todayStart.getTime(),
+  );
 
   return (
     <div>
@@ -125,9 +178,11 @@ export default function HomePage() {
               </p>
             </div>
             <div className="rounded-xl border border-slate-200 bg-white p-5">
-              <p className="text-xs font-semibold text-slate-500">次回</p>
-              <p className="mt-1 text-sm font-semibold text-wakayama-orange">
-                {assemblyStatus.todayAgenda}
+              <p className="text-xs font-semibold text-slate-500">
+                {countdownTitle}
+              </p>
+              <p className="mt-1 text-lg font-bold text-wakayama-orange leading-snug">
+                {countdownText}
               </p>
             </div>
             <div className="rounded-xl border border-wakayama-blue/30 bg-wakayama-blue-soft p-5">
@@ -205,29 +260,25 @@ export default function HomePage() {
 
           {(() => {
             const PREVIEW_COUNT = 3;
-            const previewItems = schedule.slice(0, PREVIEW_COUNT);
-            const restItems = schedule.slice(PREVIEW_COUNT);
-            const renderItem = (item: (typeof schedule)[number]) => {
+            const previewItems = upcomingSchedule.slice(0, PREVIEW_COUNT);
+            const restItems = upcomingSchedule.slice(PREVIEW_COUNT);
+            const renderItem = (item: (typeof upcomingSchedule)[number]) => {
               const d = formatDate(item.date);
+              const itemDate = new Date(item.date);
+              const isToday = isSameDay(today, itemDate);
               const color = categoryColor[item.category] ?? "bg-slate-400";
               return (
                 <li key={item.date + item.title} className="pl-6 relative">
                   <span
                     className={`absolute -left-[9px] top-2 h-4 w-4 rounded-full border-2 border-white ring-2 ${
-                      item.isToday
-                        ? "ring-wakayama-orange"
-                        : item.past
-                          ? "ring-slate-200"
-                          : "ring-slate-300"
-                    } ${item.past ? "bg-slate-300" : color}`}
+                      isToday ? "ring-wakayama-orange" : "ring-slate-300"
+                    } ${color}`}
                   />
                   <div
                     className={`rounded-xl border p-4 sm:p-5 transition-colors ${
-                      item.isToday
+                      isToday
                         ? "border-wakayama-orange/40 bg-wakayama-orange-soft"
-                        : item.past
-                          ? "border-slate-200 bg-slate-50/70"
-                          : "border-slate-200 bg-white hover:border-slate-300"
+                        : "border-slate-200 bg-white hover:border-slate-300"
                     }`}
                   >
                     <div className="flex flex-wrap items-start justify-between gap-3">
@@ -250,10 +301,7 @@ export default function HomePage() {
                           >
                             {item.category}
                           </Badge>
-                          {item.isToday && <Badge variant="live">本日</Badge>}
-                          {item.past && !item.isToday && (
-                            <Badge variant="muted">済</Badge>
-                          )}
+                          {isToday && <Badge variant="live">本日</Badge>}
                         </div>
                         <p className="mt-2 text-base font-semibold text-slate-900">
                           {item.title}
@@ -267,6 +315,14 @@ export default function HomePage() {
                 </li>
               );
             };
+
+            if (upcomingSchedule.length === 0) {
+              return (
+                <p className="text-sm text-slate-500">
+                  今後の日程は現時点で公開されていません。
+                </p>
+              );
+            }
 
             return (
               <>
