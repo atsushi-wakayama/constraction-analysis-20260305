@@ -191,7 +191,9 @@ export default async function MemberDetailPage({ params }: PageProps) {
         ) : (
           <>
             <ol className="relative border-l-2 border-slate-200 ml-2 space-y-5">
-              {member.activities.map((a) => (
+              {[...member.activities]
+                .sort((a, b) => b.date.localeCompare(a.date))
+                .map((a) => (
                 <li key={a.date + a.title} className="pl-6 relative">
                   <span className="absolute -left-[9px] top-3 h-4 w-4 rounded-full border-2 border-white ring-2 ring-wakayama-orange/60 bg-wakayama-orange" />
                   <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
