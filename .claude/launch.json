@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--prefix", "mirai-wakayama-gikai"],
       "port": 3000
+    },
+    {
+      "name": "mirai-wakayama-gikai-admin (Next.js dev)",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "mirai-wakayama-gikai-admin"],
+      "port": 3001
     }
   ]
 }

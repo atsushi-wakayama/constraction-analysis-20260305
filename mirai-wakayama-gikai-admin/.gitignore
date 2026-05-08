@@ -1,0 +1,10 @@
+node_modules
+.next
+.env
+.env.local
+*.log
+.DS_Store
+data/*.json
+data/_backup_*/
+data/receipt-images/
+!data/.gitkeep
