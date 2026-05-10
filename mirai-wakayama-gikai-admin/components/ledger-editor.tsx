@@ -57,11 +57,17 @@ export function LedgerEditor({
   fiscalYear,
   saveAction,
   importActivity,
+  certSumsByCategory = {},
+  activitySumsByCategory = {},
+  vehicleCertSum = 0,
 }: {
   initial: LedgerEntry[];
   fiscalYear: number;
   saveAction: SaveAction;
   importActivity: ImportAction;
+  certSumsByCategory?: Partial<Record<ExpenseCategory, number>>;
+  activitySumsByCategory?: Partial<Record<ExpenseCategory, number>>;
+  vehicleCertSum?: number;
 }) {
   const [rows, setRows] = useState<LedgerEntry[]>(
     initial.length ? initial : [blankRow(fiscalYear)],
@@ -182,29 +188,94 @@ export function LedgerEditor({
       { internal: "事務費", label: "事務費" },
       { internal: "人件費", label: "人　件　費" },
     ];
-    const DEFAULTS: Record<string, string> = {
-      調査研究費: "高速代金等",
-      研修費: "議会連盟会費",
-      広報広聴費: "広報活動に係る経費等",
-      要請陳情活動費: "",
-      会議費: "会議、意見交換に係る経費等",
-      資料作成費: "",
-      資料購入費: "新聞購入経費",
-      事務所費: "事務所賃借料等",
-      事務費: "事務用品購入費等",
-      人件費: "事務員給料",
-    };
     return ROWS.map((r) => {
-      const sum = rows
+      const ledgerSum = rows
         .filter((e) => e.category === r.internal)
         .reduce((s, e) => s + (e.allocatedYen || 0), 0);
+      const certSum = certSumsByCategory[r.internal] ?? 0;
+      const activitySum = activitySumsByCategory[r.internal] ?? 0;
+
+      // 帳簿のガソリン代だけ抽出
+      const ledgerGasSum = rows
+        .filter(
+          (e) =>
+            e.category === r.internal &&
+            (`${e.content} ${e.payee}`.includes("ガソリン")),
+        )
+        .reduce((s, e) => s + (e.allocatedYen || 0), 0);
+
+      const alerts: { tone: "warning" | "danger" | "info"; text: string }[] = [];
+
+      // 1. 支払証明書 vs 帳簿
+      if (certSum > 0) {
+        const diff = ledgerSum - certSum;
+        if (Math.abs(diff) > 0) {
+          alerts.push({
+            tone: "warning",
+            text: `支払証明書 ¥${certSum.toLocaleString()} と差額 ${diff > 0 ? "+" : ""}¥${diff.toLocaleString()}`,
+          });
+        }
+      }
+
+      // 2. 活動記録簿 vs 帳簿
+      if (activitySum > 0) {
+        const diff = ledgerSum - activitySum;
+        if (Math.abs(diff) > 0) {
+          alerts.push({
+            tone: "warning",
+            text: `活動記録 ¥${activitySum.toLocaleString()} と差額 ${diff > 0 ? "+" : ""}¥${diff.toLocaleString()}`,
+          });
+        }
+      }
+
+      // 3. 調査研究費・研修費限定: ガソリン代の整合
+      if (
+        (r.internal === "調査研究費" || r.internal === "研修費") &&
+        vehicleCertSum > 0
+      ) {
+        // この行は概念的にカテゴリ全体だが、ガソリン代に限定した比較も補足表示
+        if (r.internal === "調査研究費") {
+          // 自動車使用簿生成certの「調査研究費」分を抽出するのは難しいので、合計のみ参考表示
+          // alerts already covers cert vs ledger; 追加メッセージなし
+        }
+      }
+
+      // 4. 帳簿に何も無いがcertにある
+      if (ledgerSum === 0 && certSum > 0) {
+        alerts.push({
+          tone: "danger",
+          text: `支払証明書 ¥${certSum.toLocaleString()} があるが帳簿は空`,
+        });
+      }
+
       return {
+        internal: r.internal,
         label: r.label,
-        sum,
-        breakdown: sum > 0 ? DEFAULTS[r.internal] ?? "" : "",
+        sum: ledgerSum,
+        ledgerGasSum,
+        alerts,
       };
     });
-  }, [rows]);
+  }, [rows, certSumsByCategory, activitySumsByCategory, vehicleCertSum]);
+
+  // 全体ガソリン代チェック（調査研究費＋研修費の帳簿ガソリン代 vs 自動車使用簿生成cert）
+  const globalGasAlert = useMemo(() => {
+    if (vehicleCertSum === 0) return null;
+    const ledgerGas = rows
+      .filter(
+        (e) =>
+          (e.category === "調査研究費" || e.category === "研修費") &&
+          `${e.content} ${e.payee}`.includes("ガソリン"),
+      )
+      .reduce((s, e) => s + (e.allocatedYen || 0), 0);
+    if (ledgerGas === vehicleCertSum) return null;
+    const diff = ledgerGas - vehicleCertSum;
+    return {
+      ledgerGas,
+      vehicleCertSum,
+      diff,
+    };
+  }, [rows, vehicleCertSum]);
 
   function toggleSort(key: SortKey) {
     setSort((cur) => {
@@ -221,62 +292,88 @@ export function LedgerEditor({
 
   return (
     <div className="space-y-4">
-      {/* ===== 集計プレビュー ===== */}
-      <section className="app-card p-4">
-        <h3 className="section-title mb-3">
-          <span>経費別集計プレビュー</span>
-          <small>編集中の値で報告書がどうなるか</small>
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4">
-          <table className="w-full border-collapse text-sm border border-[--color-foreground]">
-            <thead>
-              <tr>
-                <th className="border border-[--color-foreground] px-2 py-1.5 w-32 text-center">経　費</th>
-                <th className="border border-[--color-foreground] px-2 py-1.5 w-28 text-center">支出額</th>
-                <th className="border border-[--color-foreground] px-2 py-1.5 text-center">主たる支出の内訳</th>
-              </tr>
-            </thead>
-            <tbody>
-              {reportRows.map((r) => (
-                <tr key={r.label}>
-                  <td className="border border-[--color-foreground] px-2 py-1.5 text-center">{r.label}</td>
-                  <td className="border border-[--color-foreground] px-2 py-1.5 text-right tabular-nums font-mono">
-                    {r.sum.toLocaleString()}
-                  </td>
-                  <td className="border border-[--color-foreground] px-3 py-1.5 text-xs text-[--color-muted]">
-                    {r.breakdown}
-                  </td>
-                </tr>
-              ))}
-              <tr className="bg-[--color-surface-3]">
-                <td className="border border-[--color-foreground] px-2 py-1.5 text-center font-bold">合　計</td>
-                <td className="border border-[--color-foreground] px-2 py-1.5 text-right tabular-nums font-mono font-bold">
-                  {expenseSum.toLocaleString()}
-                </td>
-                <td className="border border-[--color-foreground] px-3 py-1.5"></td>
-              </tr>
-            </tbody>
-          </table>
-          <div className="grid grid-cols-2 md:grid-cols-1 gap-2 md:w-44">
-            <div className="app-stat app-stat-mint">
-              <div className="app-stat-label">収入</div>
-              <div className="app-stat-value">¥{incomeSum.toLocaleString()}</div>
-            </div>
-            <div className="app-stat">
-              <div className="app-stat-label">残余</div>
-              <div className="app-stat-value">¥{(incomeSum - expenseSum).toLocaleString()}</div>
-              <div
-                className={
-                  "app-stat-sub " +
-                  (incomeSum - expenseSum >= 0
-                    ? "text-[--color-mirai-green-deep]"
-                    : "text-[--color-mirai-red]")
-                }
-              >
-                {incomeSum - expenseSum >= 0 ? "繰越予定" : "超過"}
-              </div>
+      {/* ===== 集計プレビュー（コンパクト） ===== */}
+      <section className="app-card p-4 bg-gradient-to-br from-[--color-brand-soft]/40 via-white to-white">
+        <header className="flex items-baseline justify-between mb-3">
+          <h3 className="text-sm font-bold flex items-center gap-1.5">
+            <span>🌱</span>
+            <span>集計プレビュー</span>
+          </h3>
+          <div className="text-[11px] text-[--color-faint]">編集中の値で更新</div>
+        </header>
+
+        {/* 上段: 収入 / 支出 / 残余 */}
+        <div className="grid grid-cols-3 gap-2 mb-3">
+          <div className="rounded-xl bg-white border border-[--color-border] px-3 py-2">
+            <div className="text-[10px] text-[--color-faint]">収入</div>
+            <div className="font-display tabular-nums text-base text-[--color-brand-deep]">
+              ¥{incomeSum.toLocaleString()}
             </div>
           </div>
+          <div className="rounded-xl bg-white border border-[--color-border] px-3 py-2">
+            <div className="text-[10px] text-[--color-faint]">支出</div>
+            <div className="font-display tabular-nums text-base">
+              ¥{expenseSum.toLocaleString()}
+            </div>
+          </div>
+          <div
+            className={`rounded-xl border px-3 py-2 ${
+              incomeSum - expenseSum >= 0
+                ? "bg-[--color-brand-soft] border-[--color-brand-light]"
+                : "bg-[--color-mirai-red-soft] border-[--color-mirai-red]/30"
+            }`}
+          >
+            <div className="text-[10px] text-[--color-faint]">残余</div>
+            <div
+              className={`font-display tabular-nums text-base ${
+                incomeSum - expenseSum >= 0
+                  ? "text-[--color-brand-deep]"
+                  : "text-[--color-mirai-red]"
+              }`}
+            >
+              ¥{(incomeSum - expenseSum).toLocaleString()}
+            </div>
+          </div>
+        </div>
+
+        {/* 下段: 経費種別ごと（コンパクトなバーリスト） */}
+        <ul className="space-y-1">
+          {reportRows.map((r) => {
+            const ratio = expenseSum > 0 ? (r.sum / expenseSum) * 100 : 0;
+            const isZero = r.sum === 0;
+            return (
+              <li
+                key={r.label}
+                className={`grid grid-cols-[110px_1fr_90px] items-center gap-2 px-1 ${
+                  isZero ? "opacity-40" : ""
+                }`}
+              >
+                <span className="text-xs text-[--color-foreground]">
+                  {r.label.replace(/[\s　]/g, "")}
+                </span>
+                <div className="h-2 rounded-full bg-[--color-surface-3] overflow-hidden">
+                  <div
+                    className="h-2 rounded-full mirai-gradient transition-all duration-500 ease-out"
+                    style={{ width: `${ratio}%` }}
+                  />
+                </div>
+                <span className="text-right text-xs font-display tabular-nums">
+                  ¥{r.sum.toLocaleString()}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+
+        {/* 合計 */}
+        <div className="mt-3 pt-3 border-t border-dashed border-[--color-border] flex items-baseline justify-between">
+          <span className="text-xs font-bold flex items-center gap-1">
+            <span>🌸</span>
+            <span>合計</span>
+          </span>
+          <span className="font-display tabular-nums text-lg text-[--color-brand-deep]">
+            ¥{expenseSum.toLocaleString()}
+          </span>
         </div>
       </section>
 

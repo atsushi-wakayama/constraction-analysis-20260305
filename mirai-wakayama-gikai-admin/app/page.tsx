@@ -14,6 +14,8 @@ import { getActiveYear } from "@/lib/active-year";
 import { ensureFreshToken, googleConfigured } from "@/lib/google-auth";
 import { EmptyState, MetaLine, Pill, SectionCard, StatTile } from "@/components/ui";
 import { ExpandableList } from "@/components/expandable-list";
+import { CertOutOfPrefGroup } from "@/components/cert-out-of-pref-group";
+import { CategoryLegend, CircleProgress, DonutChart } from "@/components/visualizations";
 
 export const dynamic = "force-dynamic";
 
@@ -45,10 +47,37 @@ export default async function HomePage() {
   const remainder = incomeSum - expenseSum;
   const usageRate = incomeSum > 0 ? (expenseSum / incomeSum) * 100 : 0;
   const tripsKm = trips.reduce((s, t) => s + (t.businessKm || 0), 0);
+
+  // ドーナツ用に経費種別ごと集計
+  const CAT_COLORS: Record<string, string> = {
+    調査研究費: "#006833",
+    研修費: "#3e8c64",
+    広報広聴費: "#7baf95",
+    会議費: "#bcecd3",
+    要請陳情活動費: "#a9e89d",
+    資料作成費: "#d0e0cd",
+    資料購入費: "#eae0da",
+    事務所費: "#d97706",
+    事務費: "#f99c00",
+    人件費: "#5d5d5d",
+  };
+  const sumsByCategory = new Map<string, number>();
+  for (const e of ledger) {
+    const k = e.category || "未分類";
+    sumsByCategory.set(k, (sumsByCategory.get(k) ?? 0) + (e.allocatedYen || 0));
+  }
+  const donutData = Object.keys(CAT_COLORS).map((k) => ({
+    label: k,
+    value: sumsByCategory.get(k) ?? 0,
+    color: CAT_COLORS[k],
+  }));
   const generatedCerts = certs.filter((c) => c.sourceKey?.startsWith("vehicle:")).length;
   const importedLedger = ledger.filter((e) => e.sourceKey).length;
-  const lastUpdated = [...certs, ...acts, ...receipts, ...ledger]
-    .map((x) => x.updatedAt ?? "")
+  const lastUpdated = [
+    ...certs.map((x) => x.updatedAt),
+    ...acts.map((x) => x.updatedAt),
+    ...receipts.map((x) => x.updatedAt),
+  ]
     .filter(Boolean)
     .sort()
     .pop();
@@ -126,59 +155,118 @@ export default async function HomePage() {
           </div>
         </header>
 
-        {/* ===== Google Drive ===== */}
-        <section className="app-card p-5 flex items-center justify-between gap-3 flex-wrap border-l-4 border-l-[--color-brand]">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-full mirai-gradient flex items-center justify-center text-white font-bold shrink-0">
-              ☁
-            </div>
-            <div className="min-w-0">
-              <div className="text-sm font-bold flex items-center gap-2">
-                Google Drive 連携
-                {gToken ? (
-                  <Pill tone="green">
-                    {gToken.email ?? "ログイン中"}
-                  </Pill>
-                ) : gConfigured ? (
-                  <Pill tone="orange">未ログイン</Pill>
-                ) : (
-                  <Pill tone="muted">未設定</Pill>
-                )}
+        {/* ===== データ取り込みエリア ===== */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {/* ファイル取り込み（メイン導線） */}
+          <Link
+            href="/forms/import"
+            className="app-card app-card-hover p-5 flex items-center justify-between gap-3 border-l-4 border-l-[--color-brand]"
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-12 h-12 rounded-2xl mirai-gradient flex items-center justify-center text-white text-2xl shrink-0">
+                📂
               </div>
-              <p className="text-xs text-[--color-muted] mt-0.5">
-                共有フォルダから領収書PDFを自動取り込み・xlsx検出・JSONバックアップが可能です。
-              </p>
+              <div className="min-w-0">
+                <div className="text-sm font-bold flex items-center gap-2">
+                  データの取り込みはこちら
+                  <Pill tone="mint">かんたん</Pill>
+                </div>
+                <p className="text-xs text-[--color-muted] mt-0.5 leading-relaxed">
+                  既存のxlsx・docxをドラッグ&ドロップで自動登録
+                </p>
+              </div>
             </div>
-          </div>
-          <Link href="/google-sync" className="btn btn-primary btn-sm">
-            連携画面を開く →
+            <span className="btn btn-mint btn-sm shrink-0">アップロード →</span>
+          </Link>
+
+          {/* Google Drive 連携 */}
+          <Link
+            href="/google-sync"
+            className="app-card app-card-hover p-5 flex items-center justify-between gap-3 border-l-4 border-l-[--color-brand-light]"
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-12 h-12 rounded-2xl mirai-gradient flex items-center justify-center text-white text-2xl shrink-0">
+                ☁
+              </div>
+              <div className="min-w-0">
+                <div className="text-sm font-bold flex items-center gap-2">
+                  Google Drive 連携
+                  {gToken ? (
+                    <Pill tone="green">{gToken.email ?? "ログイン中"}</Pill>
+                  ) : gConfigured ? (
+                    <Pill tone="orange">未ログイン</Pill>
+                  ) : (
+                    <Pill tone="muted">未設定</Pill>
+                  )}
+                </div>
+                <p className="text-xs text-[--color-muted] mt-0.5 leading-relaxed">
+                  共有フォルダから自動取り込み・JSONバックアップ
+                </p>
+              </div>
+            </div>
+            <span className="btn btn-secondary btn-sm shrink-0">開く →</span>
           </Link>
         </section>
 
-        {/* ===== KPI ===== */}
-        <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <StatTile
-            label="政務活動費 収入"
-            value={yen(incomeSum)}
-            sub={`${activeYear}年度 交付額`}
-            tone="mint"
-          />
-          <StatTile
-            label="支出（充当額）合計"
-            value={yen(expenseSum)}
-            sub={`使用率 ${usageRate.toFixed(1)}%`}
-          />
-          <StatTile
-            label="残余"
-            value={yen(remainder)}
-            sub={remainder >= 0 ? "繰越予定" : "超過しています"}
-            tone={remainder >= 0 ? "green" : "red"}
-          />
-          <StatTile
-            label="走行距離（政務活動）"
-            value={`${tripsKm.toFixed(1)} km`}
-            sub={`自家用車 ${trips.length}件`}
-          />
+        {/* ===== サマリ：使用率 + ドーナツ + 4KPI ===== */}
+        <section className="app-card p-6 grid grid-cols-1 md:grid-cols-[180px_240px_1fr] gap-6 items-center">
+          <div className="flex flex-col items-center gap-2">
+            <CircleProgress
+              value={Math.min(usageRate, 100)}
+              label={
+                <span className="flex items-center gap-1">
+                  <span>🌱</span>
+                  <span>使用率</span>
+                </span>
+              }
+              sub={
+                <span>
+                  ¥{Math.round(expenseSum / 10000).toLocaleString()}万 / ¥
+                  {Math.round(incomeSum / 10000).toLocaleString()}万
+                </span>
+              }
+              size={130}
+            />
+          </div>
+          <div className="flex items-center justify-center">
+            <div className="flex items-center gap-3">
+              <DonutChart data={donutData} size={170} />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <StatTile label="🌸 収入" value={yen(incomeSum)} sub={`${activeYear}年度 交付`} tone="mint" />
+            <StatTile label="🍃 支出（充当）" value={yen(expenseSum)} sub={`使用率 ${usageRate.toFixed(1)}%`} />
+            <StatTile
+              label={remainder >= 0 ? "🌷 残余" : "⚠ 残余"}
+              value={yen(remainder)}
+              sub={remainder >= 0 ? "繰越予定" : "超過"}
+              tone={remainder >= 0 ? "green" : "red"}
+            />
+            <StatTile
+              label="🚗 走行距離"
+              value={`${tripsKm.toFixed(1)} km`}
+              sub={`政務活動 ${trips.length}件`}
+            />
+          </div>
+        </section>
+
+        <section className="app-card p-5">
+          <header className="flex items-baseline justify-between mb-3">
+            <h2 className="text-sm font-bold flex items-center gap-1.5">
+              <span>🪻</span>
+              <span>経費種別ごとの構成</span>
+            </h2>
+            <span className="text-[10px] text-[--color-faint]">帳簿ベース</span>
+          </header>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <CategoryLegend data={donutData} />
+            <div className="space-y-1.5 text-[11px]">
+              <p className="text-[--color-muted] leading-relaxed">
+                色帯はそれぞれの経費種別に対応します。割合が大きい順に表示。<br />
+                編集は <span className="text-[--color-brand] font-bold">個人会計帳簿</span> から。
+              </p>
+            </div>
+          </div>
         </section>
 
         {/* ===== データの流れ ===== */}
@@ -189,7 +277,7 @@ export default async function HomePage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr_auto_1fr] gap-3 items-center">
             <div className="flow-card flow-card-strong">
-              <Pill tone="cream">最終出力</Pill>
+              <Pill tone="muted">最終出力</Pill>
               <div className="font-bold">政務活動費 収支報告書</div>
               <p className="text-xs text-[--color-muted]">別記第5号様式 ・ 議長へ提出</p>
             </div>
@@ -295,58 +383,87 @@ export default async function HomePage() {
         {/* ===================================================== */}
         {/* 3) 支払証明書 */}
         {/* ===================================================== */}
-        <SectionCard
-          title="③ 支払証明書"
-          meta={`別記第7号様式 · ${certs.length}件 (うち自動生成 ${generatedCerts}件)`}
-          description="経費種別ごとに支払明細を記載する書類。自動車使用簿の走行距離からガソリン代分を自動生成できます。"
-          actions={
-            <Link href="/forms/payment-certificate/new" className="btn btn-mint">
-              + 新規作成
-            </Link>
-          }
-        >
-          <div className="flex items-center gap-2 mb-3 flex-wrap">
-            <Pill tone="muted">↑ 取り込み元</Pill>
-            <span className="text-xs text-[--color-muted]">自家用自動車使用簿（ガソリン代）</span>
-            <span className="text-[--color-faint]">→</span>
-            <Pill tone="mint">↓ 出力先</Pill>
-            <span className="text-xs text-[--color-muted]">個人会計帳簿</span>
-          </div>
-          {certs.length === 0 ? (
-            <EmptyState title="この年度の支払証明書はまだありません" />
-          ) : (
-            <ul className="divide-y divide-[--color-border]">
-              {certs.map((c) => (
-                <li
-                  key={c.id}
-                  className="py-3 flex items-center justify-between gap-3"
-                >
-                  <Link
-                    href={`/forms/payment-certificate/${c.id}`}
-                    className="min-w-0 flex items-center gap-3 flex-wrap hover:text-[--color-brand] flex-1 group"
-                  >
-                    <span className="text-sm font-bold group-hover:underline">{c.category}</span>
-                    {c.sourceKey?.startsWith("vehicle:") && (
-                      <Pill tone="mint">自動車使用簿から生成</Pill>
-                    )}
-                    <span className="text-xs text-[--color-faint]">
-                      {c.entries.length}件 · 充当{" "}
-                      <span className="font-display tabular-nums">
-                        {yen(c.entries.reduce((s, e) => s + (e.allocatedYen || 0), 0))}
-                      </span>
-                    </span>
-                  </Link>
-                  <Link
-                    href={`/forms/payment-certificate/${c.id}`}
-                    className="btn btn-ghost btn-sm"
-                  >
-                    編集 / 印刷 →
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-        </SectionCard>
+        {(() => {
+          const regularCerts = certs.filter((c) => !c.linkedActivityId);
+          const outOfPrefCerts = certs.filter((c) => !!c.linkedActivityId);
+          return (
+            <SectionCard
+              title="③ 支払証明書"
+              meta={`別記第7号様式 · ${certs.length}件 (うち自動生成 ${generatedCerts}件)`}
+              description="経費種別ごとに支払明細を記載する書類。自動車使用簿のガソリン代分・活動記録の県外調査分を自動生成できます。"
+              actions={
+                <Link href="/forms/payment-certificate/new" className="btn btn-mint">
+                  + 新規作成
+                </Link>
+              }
+            >
+              <div className="flex items-center gap-2 mb-4 flex-wrap">
+                <Pill tone="muted">↑ 取り込み元</Pill>
+                <span className="text-xs text-[--color-muted]">
+                  自家用自動車使用簿（ガソリン代） / 活動記録簿（県外調査）
+                </span>
+                <span className="text-[--color-faint]">→</span>
+                <Pill tone="mint">↓ 出力先</Pill>
+                <span className="text-xs text-[--color-muted]">個人会計帳簿</span>
+              </div>
+
+              {certs.length === 0 ? (
+                <EmptyState title="この年度の支払証明書はまだありません" />
+              ) : (
+                <div className="space-y-5">
+                  {/* 通常の支払証明書 */}
+                  {regularCerts.length > 0 && (
+                    <div>
+                      <h4 className="text-xs font-bold text-[--color-muted] mb-1.5 flex items-center gap-1.5">
+                        <span>📑</span>
+                        <span>通常の支払証明書</span>
+                        <span className="text-[--color-faint] font-normal">
+                          {regularCerts.length}件
+                        </span>
+                      </h4>
+                      <ul className="divide-y divide-[--color-border]">
+                        {regularCerts.map((c) => (
+                          <li
+                            key={c.id}
+                            className="py-2.5 flex items-center justify-between gap-3"
+                          >
+                            <Link
+                              href={`/forms/payment-certificate/${c.id}`}
+                              className="min-w-0 flex items-center gap-3 flex-wrap hover:text-[--color-brand] flex-1 group"
+                            >
+                              <span className="text-sm font-bold group-hover:underline">
+                                {c.category}
+                              </span>
+                              {c.sourceKey?.startsWith("vehicle:") && (
+                                <Pill tone="mint">自動車使用簿から生成</Pill>
+                              )}
+                              <span className="text-xs text-[--color-faint]">
+                                {c.entries.length}件 · 充当{" "}
+                                <span className="font-display tabular-nums">
+                                  {yen(
+                                    c.entries.reduce((s, e) => s + (e.allocatedYen || 0), 0),
+                                  )}
+                                </span>
+                              </span>
+                            </Link>
+                            <Link
+                              href={`/forms/payment-certificate/${c.id}`}
+                              className="btn btn-ghost btn-sm"
+                            >
+                              編集 / 印刷 →
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  <CertOutOfPrefGroup certs={outOfPrefCerts} activities={acts} />
+                </div>
+              )}
+            </SectionCard>
+          );
+        })()}
 
         {/* ===================================================== */}
         {/* 4) 活動記録簿 */}

@@ -141,7 +141,7 @@ export function ActivityRecordEditor({
             value={header.purposeContent}
             onChange={(e) => setHeader({ ...header, purposeContent: e.target.value })}
             rows={14}
-            className="mt-1 w-full border rounded px-2 py-1 font-sans"
+            className="mt-1 w-full app-input font-sans"
           />
         </label>
       </section>
@@ -187,7 +187,7 @@ export function ActivityRecordEditor({
                       name="expense_category"
                       value={e.category || "調査研究費"}
                       onChange={(ev) => patch(i, { category: ev.target.value })}
-                      className="w-28 border rounded px-1"
+                      className="w-28 app-input"
                     >
                       {CATEGORIES.map((c) => (
                         <option key={c}>{c}</option>
@@ -200,7 +200,7 @@ export function ActivityRecordEditor({
                       value={e.description}
                       onChange={(ev) => patch(i, { description: ev.target.value })}
                       rows={2}
-                      className="w-72 border rounded px-1"
+                      className="w-72 app-input"
                     />
                   </td>
                   <td className="border px-1 py-1">
@@ -209,7 +209,7 @@ export function ActivityRecordEditor({
                       value={e.payee ?? ""}
                       onChange={(ev) => patch(i, { payee: ev.target.value })}
                       placeholder="例: JAL/JR西"
-                      className="w-28 border rounded px-1"
+                      className="w-28 app-input"
                     />
                   </td>
                   <td className="border px-1 py-1">
@@ -218,7 +218,7 @@ export function ActivityRecordEditor({
                       name="expense_total"
                       value={e.totalYen}
                       onChange={(ev) => patch(i, { totalYen: Number(ev.target.value) })}
-                      className="w-24 border rounded px-1 text-right"
+                      className="w-24 app-input text-right"
                     />
                   </td>
                   <td className="border px-1 py-1">
@@ -227,7 +227,7 @@ export function ActivityRecordEditor({
                       name="expense_allocated"
                       value={e.allocatedYen}
                       onChange={(ev) => patch(i, { allocatedYen: Number(ev.target.value) })}
-                      className="w-24 border rounded px-1 text-right"
+                      className="w-24 app-input text-right"
                     />
                   </td>
                   <td className="border px-1 py-1">
@@ -235,7 +235,7 @@ export function ActivityRecordEditor({
                       name="expense_note"
                       value={e.note}
                       onChange={(ev) => patch(i, { note: ev.target.value })}
-                      className="w-32 border rounded px-1"
+                      className="w-32 app-input"
                     />
                   </td>
                   <td className="border px-1 py-1 text-center bg-[--color-brand-soft]/30">

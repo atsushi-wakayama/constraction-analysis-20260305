@@ -1,15 +1,49 @@
 import Link from "next/link";
 import { getActiveYear } from "@/lib/active-year";
-import { listLedgerByYear } from "@/lib/storage";
+import {
+  listActivitiesByYear,
+  listCertificatesByYear,
+  listLedgerByYear,
+} from "@/lib/storage";
 import { LedgerEditor } from "@/components/ledger-editor";
 import { PageHeader } from "@/components/ui";
+import type { ExpenseCategory } from "@/lib/types";
 import { importFromActivityAction, saveLedgerAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function LedgerPage() {
   const year = await getActiveYear();
-  const entries = await listLedgerByYear(year);
+  const [entries, certs, activities] = await Promise.all([
+    listLedgerByYear(year),
+    listCertificatesByYear(year),
+    listActivitiesByYear(year),
+  ]);
+
+  // 各カテゴリで支払証明書／活動記録の集計値を準備（備考アラート用）
+  const certSums: Partial<Record<ExpenseCategory, number>> = {};
+  const certCounts: Partial<Record<ExpenseCategory, number>> = {};
+  for (const c of certs) {
+    const sum = c.entries.reduce((s, e) => s + (e.allocatedYen || 0), 0);
+    certSums[c.category] = (certSums[c.category] ?? 0) + sum;
+    certCounts[c.category] = (certCounts[c.category] ?? 0) + 1;
+  }
+  const activitySums: Partial<Record<ExpenseCategory, number>> = {};
+  for (const a of activities) {
+    for (const exp of a.expenses) {
+      const cat = exp.category as ExpenseCategory;
+      if (!cat) continue;
+      activitySums[cat] = (activitySums[cat] ?? 0) + (exp.allocatedYen || 0);
+    }
+  }
+  // ガソリン代（自動車使用簿から自動生成）の合計
+  const vehicleCertSum = certs
+    .filter((c) => c.sourceKey?.startsWith("vehicle:"))
+    .reduce(
+      (s, c) => s + c.entries.reduce((sub, e) => sub + (e.allocatedYen || 0), 0),
+      0,
+    );
+
   return (
     <div className="max-w-7xl mx-auto px-6 py-8 space-y-4">
       <PageHeader
@@ -37,6 +71,9 @@ export default async function LedgerPage() {
         fiscalYear={year}
         saveAction={saveLedgerAction}
         importActivity={importFromActivityAction}
+        certSumsByCategory={certSums}
+        activitySumsByCategory={activitySums}
+        vehicleCertSum={vehicleCertSum}
       />
     </div>
   );

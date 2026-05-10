@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   getActivity,
+  listActivitiesByYear,
   listCertificatesByActivity,
   listReceiptsByActivity,
 } from "@/lib/storage";
@@ -26,9 +27,17 @@ export default async function ActivityRecordEditPage({ params }: Props) {
   const rec = isNew ? null : await getActivity(id);
   if (!isNew && !rec) notFound();
 
-  const [linkedCerts, linkedReceipts] = isNew
-    ? [[], []]
-    : await Promise.all([listCertificatesByActivity(id), listReceiptsByActivity(id)]);
+  const [linkedCerts, linkedReceipts, siblings] = isNew
+    ? [[], [], []]
+    : await Promise.all([
+        listCertificatesByActivity(id),
+        listReceiptsByActivity(id),
+        rec ? listActivitiesByYear(rec.fiscalYear) : Promise.resolve([]),
+      ]);
+
+  const idx = siblings.findIndex((a) => a.id === id);
+  const prev = idx > 0 ? siblings[idx - 1] : null;
+  const next = idx >= 0 && idx < siblings.length - 1 ? siblings[idx + 1] : null;
 
   const action = isNew
     ? createActivityAction
@@ -60,6 +69,49 @@ export default async function ActivityRecordEditPage({ params }: Props) {
           </>
         }
         description="参考様式4。視察や研修などの活動内容を記録します。県外調査の場合は支払証明書・領収書を紐付けて1セットで管理できます。"
+        actions={
+          rec ? (
+            <div className="flex items-center gap-2">
+              {prev ? (
+                <Link
+                  href={`/forms/activity-record/${prev.id}`}
+                  className="btn btn-secondary btn-sm"
+                  title={`${prev.implementationDate} · ${prev.location}`}
+                >
+                  ← 前
+                </Link>
+              ) : (
+                <button
+                  className="btn btn-secondary btn-sm opacity-40 cursor-not-allowed"
+                  disabled
+                  type="button"
+                >
+                  ← 前
+                </button>
+              )}
+              <span className="text-xs text-[--color-faint] tabular-nums">
+                {idx + 1} / {siblings.length}
+              </span>
+              {next ? (
+                <Link
+                  href={`/forms/activity-record/${next.id}`}
+                  className="btn btn-secondary btn-sm"
+                  title={`${next.implementationDate} · ${next.location}`}
+                >
+                  次 →
+                </Link>
+              ) : (
+                <button
+                  className="btn btn-secondary btn-sm opacity-40 cursor-not-allowed"
+                  disabled
+                  type="button"
+                >
+                  次 →
+                </button>
+              )}
+            </div>
+          ) : undefined
+        }
       />
 
       <ActivityRecordEditor initial={rec} action={action} onDelete={onDelete} />
