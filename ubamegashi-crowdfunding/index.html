@@ -29,6 +29,29 @@
   }
   a { color: var(--green-deep); }
 
+  /* Demo notice banner */
+  .demo-banner {
+    background: #4a2c1a;
+    color: #ffd9a8;
+    text-align: center;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    padding: 8px 16px;
+    line-height: 1.5;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .demo-banner strong { color: #ffbb6b; letter-spacing: 0.12em; margin-right: 6px; }
+  .demo-footer-notice {
+    background: #1a1410;
+    color: #c9bfae;
+    padding: 18px 24px;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    text-align: center;
+    border-bottom: 1px solid #2a2218;
+  }
+  .demo-footer-notice strong { color: #ffbb6b; }
+
   /* Header */
   .header {
     position: sticky;
@@ -573,6 +596,10 @@
 </head>
 <body>
 
+<div class="demo-banner">
+  <strong>DEMO</strong>これは、ふるさと納税型クラウドファンディングの「告知ページの作り方」を示すデモサイトです。実在の自治体・団体・プロジェクトとは一切関係ありません。
+</div>
+
 <header class="header">
   <div class="header-inner">
     <div class="logo">
@@ -917,12 +944,19 @@
   </div>
 </section>
 
+<div class="demo-footer-notice">
+  <strong>※ 本サイトはデモサイトです。</strong><br>
+  ふるさと納税型クラウドファンディングの活用方法とプロジェクト告知ページの一例として作成されたものであり、実在の自治体・団体・プロジェクト・寄附受付とは一切関係ありません。記載の住所・連絡先・支援プラン等もすべてダミーです。
+</div>
+
 <footer>
   <div class="footer-inner">
-    <p><strong>ウバメガシの里プロジェクト</strong></p>
-    <p>主催：和歌山県日高郡日高川町／企画運営：日高川町ふるさと納税推進室</p>
-    <p>〒649-1324 和歌山県日高郡日高川町土生160</p>
-    <p class="small">© Hidakagawa Town. All Rights Reserved.</p>
+    <p><strong>ウバメガシの里プロジェクト（デモ）</strong></p>
+    <p>※本サイトはデモのため、以下はすべてダミー情報です</p>
+    <p>運営：サンプル企画事務局（架空）</p>
+    <p>〒000-0000 サンプル県サンプル市デモ町1-2-3 デモビル4F</p>
+    <p>TEL：00-0000-0000　／　Email：demo@example.com</p>
+    <p class="small">© Demo Site. このサイトに記載のすべての情報は架空のものです。</p>
   </div>
 </footer>
 
