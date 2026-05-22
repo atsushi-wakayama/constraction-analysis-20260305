@@ -307,6 +307,36 @@
     color: rgba(255,255,255,0.7);
   }
 
+  /* Fire video section */
+  .fire {
+    background: #0d0905;
+    color: #fff;
+    padding: 100px 24px;
+    text-align: center;
+  }
+  .fire .section-title .ja { color: #ffc56e; }
+  .fire .section-title .en { color: #b8860b; }
+  .fire .section-lead { color: rgba(255,255,255,0.7); }
+  .fire-video-wrap {
+    max-width: 420px;
+    margin: 40px auto 0;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(255, 140, 40, 0.18), 0 0 0 1px rgba(255,255,255,0.08);
+    background: #000;
+  }
+  .fire-video-wrap video {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .fire-caption {
+    margin-top: 24px;
+    font-size: 0.85rem;
+    letter-spacing: 0.18em;
+    color: rgba(255,255,255,0.55);
+  }
+
   /* About / Three points */
   .about { background: #fff; }
   .three-cards {
@@ -654,6 +684,28 @@
     </p>
     <div class="bridge-caption">SEEDLING&nbsp;&nbsp;→&nbsp;&nbsp;CHARCOAL</div>
   </div>
+</section>
+
+<!-- FIRE VIDEO -->
+<section class="fire" aria-label="紀州備長炭の炎">
+  <div class="section-title">
+    <span class="en">THE FIRE</span>
+    <span class="ja">炭になる、その瞬間</span>
+  </div>
+  <p class="section-lead">窯のなかで、ウバメガシは紀州備長炭へと姿を変える。</p>
+  <div class="fire-video-wrap">
+    <video
+      src="videos/binchotan-fire.mp4"
+      poster="images/binchotan-fire-poster.jpg"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="metadata"
+      aria-label="紀州備長炭が窯のなかで赤く燃える映像"
+    ></video>
+  </div>
+  <div class="fire-caption">BINCHOTAN&nbsp;&nbsp;・&nbsp;&nbsp;KISHU, WAKAYAMA</div>
 </section>
 
 <!-- ABOUT -->
