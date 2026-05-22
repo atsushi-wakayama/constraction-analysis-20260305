@@ -1,0 +1,10 @@
+{
+  "name": "ubamegashi-no-sato",
+  "version": "1.0.0",
+  "description": "ウバメガシの里 - 日高川町ふるさと納税型クラウドファンディングサイト",
+  "private": true,
+  "scripts": {
+    "start": "python3 -m http.server 3000",
+    "deploy": "vercel --prod"
+  }
+}

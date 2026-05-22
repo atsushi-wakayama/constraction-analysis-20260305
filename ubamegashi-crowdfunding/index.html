@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ウバメガシの森を未来へ｜日高川町ふるさと納税型クラウドファンディング</title>
-<meta name="description" content="和歌山県日高川町のふるさと納税型クラウドファンディング。ウバメガシの植樹を応援し、毎年「紀州備長炭」と日高川町の特産品が届く、税控除対象1口10万円の支援プログラムです。">
+<title>ウバメガシの里を50年後の後世へ｜日高川町ふるさと納税型クラウドファンディング</title>
+<meta name="description" content="和歌山県日高川町の耕作放棄地10ヘクタールをウバメガシの森に。50年後の後世にウバメガシの里を残すための、ふるさと納税型クラウドファンディング。1口10万円・税控除対象・毎年備長炭と特産品が届きます。">
 <style>
   :root {
     --green-deep: #1f3d2b;
@@ -212,15 +212,39 @@
     overflow: hidden;
     box-shadow: 0 10px 40px rgba(0,0,0,0.15);
   }
-  .story-image::after {
-    content: "ウバメガシ\AUbamegashi";
-    white-space: pre;
+  .story-overlay {
     position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    color: rgba(255,255,255,0.85);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    color: #fff; text-align: center;
+    padding: 24px;
+  }
+  .story-overlay-num {
+    font-family: "Hiragino Sans", sans-serif;
+    font-size: 5.5rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  .story-overlay-num small {
     font-size: 1.6rem;
+    margin-left: 6px;
+    font-weight: 500;
+  }
+  .story-overlay-label {
+    margin-top: 18px;
+    font-size: 1.1rem;
+    letter-spacing: 0.2em;
+    border-top: 1px solid rgba(255,255,255,0.5);
+    border-bottom: 1px solid rgba(255,255,255,0.5);
+    padding: 10px 24px;
+  }
+  .story-overlay-sub {
+    margin-top: 16px;
+    font-size: 0.9rem;
     letter-spacing: 0.15em;
-    text-align: center;
+    opacity: 0.85;
   }
   .story-text h3 {
     font-size: 1.3rem;
@@ -487,12 +511,12 @@
   <div class="hero-content">
     <span class="badge">和歌山県日高川町 × ふるさと納税型クラウドファンディング</span>
     <h1>
-      千年、火を灯しつづける森へ。<br>
-      <span class="em">ウバメガシ</span>の植樹で、紀州の里山を未来へ。
+      耕作放棄地を、<span class="em">ウバメガシの里</span>に。<br>
+      50年後の後世へ、紀州の山を手渡す。
     </h1>
     <p class="lead">
-      備長炭の原木として知られるウバメガシ。<br>
-      その豊かな森を、あなたの応援で次の世代へつなぎます。
+      日高川町の耕作放棄地 10ヘクタール を、備長炭の原木ウバメガシの森へ。<br>
+      あなたの一口が、半世紀先の里山をつくります。
     </p>
     <div class="cta-row">
       <a href="#form" class="btn btn-primary">いますぐ支援する</a>
@@ -520,7 +544,7 @@
   </div>
   <div class="stat">
     <div class="num">42<small>%</small></div>
-    <div class="label">目標 1,000万円</div>
+    <div class="label">目標 1,000万円／10ha</div>
   </div>
 </div>
 
@@ -529,26 +553,34 @@
   <div class="container">
     <div class="section-title">
       <span class="en">OUR STORY</span>
-      <span class="ja">なぜ、いま植樹なのか</span>
+      <span class="ja">耕作放棄地から、ウバメガシの里へ</span>
     </div>
-    <p class="section-lead">日高川町から始まる、千年先の山づくり。</p>
+    <p class="section-lead">日高川町から始まる、50年先の山づくり。</p>
 
     <div class="story-grid">
-      <div class="story-image" aria-hidden="true"></div>
+      <div class="story-image" aria-hidden="true">
+        <div class="story-overlay">
+          <div class="story-overlay-num">10<small>ha</small></div>
+          <div class="story-overlay-label">耕作放棄地を森へ</div>
+          <div class="story-overlay-sub">50年先のウバメガシの里</div>
+        </div>
+      </div>
       <div class="story-text">
-        <h3>紀州備長炭、原木の危機。</h3>
+        <h3>放棄された田畑を、紀州の宝の森に。</h3>
         <p>
-          和歌山県が誇る最高級木炭「紀州備長炭」。その原木であるウバメガシは、
-          高齢化と伐採量の減少、そして山林の荒廃により、いま深刻な不足に直面しています。
+          いま、日高川町には耕作されなくなった田畑が広がっています。
+          一方、和歌山が誇る最高級木炭「紀州備長炭」の原木 <strong>ウバメガシ</strong> は、
+          山林の荒廃と高齢化により深刻な不足に陥っています。
         </p>
         <p>
-          日高川町は古くから備長炭づくりの里として知られ、職人たちが世代を超えて
-          森と火を守ってきました。私たちはこの土地で、新たに<strong>1万本のウバメガシ</strong>を
-          植樹し、次の100年、そして1000年へつながる森を育てます。
+          このプロジェクトは、町内の <strong>耕作放棄地10ヘクタール</strong> を
+          ウバメガシの森へと再生し、半世紀先の後世に<strong>「ウバメガシの里」</strong>として
+          手渡すための取り組みです。ウバメガシは成長に時間のかかる樹種です。
+          だからこそ、今日の一本が、50年後の景色をつくります。
         </p>
         <p>
-          あなたの一口の支援が、苗木1本となり、山となり、いつか炭となって
-          だれかの食卓を照らします。
+          あなたの一口の支援が、苗木となり、森となり、いつか炭となって
+          子や孫の食卓を照らします。
         </p>
       </div>
     </div>
@@ -567,8 +599,8 @@
     <div class="three-cards">
       <div class="card">
         <span class="icon">🌳</span>
-        <h4>1万本の植樹で里山再生</h4>
-        <p>日高川町の遊休山林に、地元林業家と協働でウバメガシを植え、管理育成します。植樹地マップで成長を可視化。</p>
+        <h4>耕作放棄地10haを森に再生</h4>
+        <p>日高川町の耕作放棄地に、地元林業家と協働でウバメガシを植え、50年スパンで管理育成します。植樹地マップで成長を可視化。</p>
       </div>
       <div class="card">
         <span class="icon">🔥</span>
@@ -591,7 +623,7 @@
       <span class="en">SUPPORT PLAN</span>
       <span class="ja">ご支援プラン</span>
     </div>
-    <p class="section-lead">1口10万円から。あなたの名前が、森に刻まれます。</p>
+    <p class="section-lead">1口10万円から。あなたの名前が、ウバメガシの里に刻まれます。</p>
 
     <div class="plan-card">
       <span class="ribbon">RECOMMENDED PLAN</span>
