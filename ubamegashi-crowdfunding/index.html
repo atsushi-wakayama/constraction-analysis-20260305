@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ウバメガシの里を50年後の後世へ｜日高川町ふるさと納税型クラウドファンディング</title>
+<meta name="description" content="和歌山県日高川町の耕作放棄地10ヘクタールをウバメガシの森に。50年後の後世にウバメガシの里を残すための、ふるさと納税型クラウドファンディング。1口10万円・税控除対象・毎年備長炭と特産品が届きます。">
+<style>
+  :root {
+    --green-deep: #1f3d2b;
+    --green-mid: #3a6b46;
+    --green-light: #6fa776;
+    --charcoal: #221c14;
+    --cream: #f5efe2;
+    --paper: #fbf7ee;
+    --gold: #b8860b;
+    --accent: #d35400;
+    --text: #2a2a2a;
+    --muted: #6b6b6b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP", serif;
+    color: var(--text);
+    background: var(--paper);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--green-deep); }
+
+  /* Header */
+  .header {
+    position: sticky;
+    top: 0;
+    background: rgba(251, 247, 238, 0.95);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid #e6dcc4;
+    z-index: 100;
+  }
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--green-deep);
+    letter-spacing: 0.05em;
+  }
+  .logo small { display: block; font-size: 0.7rem; color: var(--muted); font-weight: 400; letter-spacing: 0; }
+  .nav a {
+    margin-left: 22px;
+    text-decoration: none;
+    font-size: 0.92rem;
+    color: var(--charcoal);
+  }
+  .nav a:hover { color: var(--accent); }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    min-height: 88vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background:
+      linear-gradient(rgba(15, 30, 20, 0.55), rgba(15, 30, 20, 0.65)),
+      radial-gradient(ellipse at center, #4a7a52 0%, #1f3d2b 70%);
+    color: #fff;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      url('images/hero-kiln.jpg') center/cover,
+      radial-gradient(ellipse at 30% 70%, #b8410b 0%, #2a1505 40%, #0c0c0c 90%);
+    filter: brightness(0.6) saturate(1.1);
+    z-index: 0;
+  }
+  .hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(180deg, rgba(15,25,15,0.35) 0%, rgba(15,25,15,0.65) 100%),
+      radial-gradient(ellipse at 30% 60%, rgba(211,84,0,0.18), transparent 60%);
+    z-index: 1;
+  }
+  .hero-content { position: relative; padding: 80px 24px; max-width: 880px; z-index: 2; }
+  .badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border: 1px solid rgba(255,255,255,0.6);
+    border-radius: 999px;
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    margin-bottom: 28px;
+  }
+  .hero h1 {
+    font-size: clamp(1.8rem, 4.5vw, 3rem);
+    line-height: 1.45;
+    font-weight: 600;
+    margin-bottom: 24px;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  .hero h1 .em { color: #ffe18a; }
+  .hero p.lead {
+    font-size: clamp(0.95rem, 1.6vw, 1.1rem);
+    margin-bottom: 36px;
+    opacity: 0.95;
+  }
+  .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-block;
+    padding: 14px 32px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.98rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(211,84,0,0.4); }
+  .btn-ghost {
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.6);
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.1); }
+
+  /* Progress */
+  .progress-wrap {
+    max-width: 1100px;
+    margin: -40px auto 0;
+    background: #fff;
+    border-radius: 6px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    position: relative;
+    z-index: 5;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 20px;
+    align-items: center;
+  }
+  .progress-bar-wrap { grid-column: 1 / -1; }
+  .progress-bar {
+    height: 12px;
+    background: #ece4cf;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .progress-bar > div {
+    height: 100%;
+    width: 42%;
+    background: linear-gradient(90deg, var(--green-mid), var(--green-light));
+    border-radius: 999px;
+  }
+  .stat .num {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--green-deep);
+    font-family: "Hiragino Sans", sans-serif;
+  }
+  .stat .num small { font-size: 0.85rem; color: var(--muted); margin-left: 2px; }
+  .stat .label { font-size: 0.8rem; color: var(--muted); }
+
+  /* Sections */
+  section { padding: 90px 24px; }
+  .container { max-width: 1000px; margin: 0 auto; }
+  .section-title {
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .section-title .ja {
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    color: var(--green-deep);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .section-title .en {
+    display: block;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    margin-bottom: 6px;
+    font-family: sans-serif;
+  }
+  .section-lead {
+    text-align: center;
+    color: var(--muted);
+    max-width: 700px;
+    margin: 0 auto 60px;
+    font-size: 0.98rem;
+  }
+
+  /* Story */
+  .story { background: var(--paper); }
+  .story-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  .story-image {
+    background:
+      linear-gradient(135deg, rgba(31,61,43,0.15), rgba(31,61,43,0.45)),
+      url('images/landscape-saplings.jpg') center/cover,
+      linear-gradient(135deg, #2b5234 0%, #6fa776 100%);
+    aspect-ratio: 4 / 5;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.18);
+  }
+  .story-overlay {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    color: #fff; text-align: center;
+    padding: 24px;
+  }
+  .story-overlay {
+    justify-content: flex-end !important;
+    background: linear-gradient(180deg, transparent 30%, rgba(15,25,15,0.85) 100%);
+  }
+  .story-overlay-num {
+    font-family: "Hiragino Sans", sans-serif;
+    font-size: 4.4rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+  .story-overlay-num small {
+    font-size: 1.4rem;
+    margin-left: 6px;
+    font-weight: 500;
+  }
+  .story-overlay-label {
+    margin-top: 14px;
+    font-size: 0.95rem;
+    letter-spacing: 0.2em;
+    border-top: 1px solid rgba(255,255,255,0.5);
+    border-bottom: 1px solid rgba(255,255,255,0.5);
+    padding: 8px 20px;
+  }
+  .story-overlay-sub {
+    margin-top: 12px;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    opacity: 0.9;
+  }
+  .story-text h3 {
+    font-size: 1.3rem;
+    color: var(--green-deep);
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+  .story-text p { margin-bottom: 16px; }
+
+  /* Bridge section: from seedling to charcoal */
+  .bridge {
+    position: relative;
+    min-height: 70vh;
+    background:
+      linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.65)),
+      url('images/sapling-kiln.jpg') center/cover;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 100px 24px;
+  }
+  .bridge-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .bridge h2 {
+    font-size: clamp(1.6rem, 3.5vw, 2.3rem);
+    line-height: 1.5;
+    margin-bottom: 24px;
+    font-weight: 600;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+  }
+  .bridge h2 .em { color: #ffc56e; }
+  .bridge p {
+    font-size: 1rem;
+    opacity: 0.95;
+    max-width: 580px;
+    margin: 0 auto;
+  }
+  .bridge-caption {
+    margin-top: 32px;
+    font-size: 0.78rem;
+    letter-spacing: 0.25em;
+    color: rgba(255,255,255,0.7);
+  }
+
+  /* About / Three points */
+  .about { background: #fff; }
+  .three-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .card {
+    background: var(--paper);
+    border-radius: 6px;
+    padding: 36px 28px;
+    text-align: center;
+    border-top: 3px solid var(--green-mid);
+  }
+  .card .icon {
+    font-size: 2.4rem;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .card h4 {
+    font-size: 1.1rem;
+    color: var(--green-deep);
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  .card p { font-size: 0.92rem; color: var(--text); }
+
+  /* Plan */
+  .plan {
+    background: linear-gradient(180deg, var(--cream) 0%, var(--paper) 100%);
+  }
+  .plan-card {
+    max-width: 720px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 8px;
+    padding: 48px 40px;
+    box-shadow: 0 12px 40px rgba(31, 61, 43, 0.12);
+    border: 1px solid #e6dcc4;
+    position: relative;
+  }
+  .plan-card .ribbon {
+    position: absolute;
+    top: -14px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: #fff;
+    padding: 6px 24px;
+    font-size: 0.82rem;
+    letter-spacing: 0.15em;
+    border-radius: 999px;
+    box-shadow: 0 4px 10px rgba(211,84,0,0.3);
+  }
+  .plan-amount {
+    text-align: center;
+    margin: 8px 0 30px;
+  }
+  .plan-amount .price {
+    font-size: 3.2rem;
+    font-weight: 700;
+    color: var(--green-deep);
+    font-family: "Hiragino Sans", sans-serif;
+    letter-spacing: -0.02em;
+  }
+  .plan-amount .price small { font-size: 1rem; color: var(--muted); margin-left: 4px; }
+  .plan-amount .unit { color: var(--muted); font-size: 0.9rem; }
+  .perk-list {
+    list-style: none;
+    margin: 24px 0;
+    padding: 24px 0;
+    border-top: 1px dashed #d4c89a;
+    border-bottom: 1px dashed #d4c89a;
+  }
+  .perk-list li {
+    padding: 12px 0 12px 36px;
+    position: relative;
+    font-size: 0.98rem;
+  }
+  .perk-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 8px; top: 12px;
+    color: var(--green-mid);
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+  .perk-list li strong { color: var(--green-deep); }
+  .tax-note {
+    background: #fdf6e3;
+    border-left: 4px solid var(--gold);
+    padding: 16px 20px;
+    border-radius: 0 4px 4px 0;
+    font-size: 0.9rem;
+    color: #5a4a20;
+  }
+
+  /* Process */
+  .process { background: var(--paper); }
+  .step-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-top: 20px;
+  }
+  .step {
+    text-align: center;
+    padding: 24px 16px;
+    position: relative;
+  }
+  .step-num {
+    width: 46px; height: 46px;
+    margin: 0 auto 14px;
+    border-radius: 50%;
+    background: var(--green-deep);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-family: sans-serif;
+  }
+  .step h5 { color: var(--green-deep); margin-bottom: 8px; font-size: 1rem; }
+  .step p { font-size: 0.85rem; color: var(--muted); }
+
+  /* Form */
+  .form-section { background: #fff; }
+  .form-wrap {
+    max-width: 680px;
+    margin: 0 auto;
+    background: var(--paper);
+    padding: 48px 40px;
+    border-radius: 8px;
+    border: 1px solid #e6dcc4;
+  }
+  .form-group { margin-bottom: 22px; }
+  .form-group label {
+    display: block;
+    font-size: 0.92rem;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--charcoal);
+  }
+  .form-group label .req {
+    color: #c0392b;
+    font-size: 0.78rem;
+    margin-left: 6px;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #d6cdb0;
+    border-radius: 4px;
+    font-size: 1rem;
+    background: #fff;
+    font-family: inherit;
+    transition: border-color 0.15s;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: var(--green-mid);
+    box-shadow: 0 0 0 3px rgba(58, 107, 70, 0.15);
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .checkbox-wrap {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 24px 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .checkbox-wrap input { margin-top: 5px; }
+  .form-submit {
+    text-align: center;
+    margin-top: 32px;
+  }
+  .btn-submit {
+    background: var(--green-deep);
+    color: #fff;
+    padding: 16px 56px;
+    font-size: 1.05rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    transition: background 0.15s;
+  }
+  .btn-submit:hover { background: var(--green-mid); }
+
+  .success-msg {
+    display: none;
+    background: #e8f3ea;
+    border: 1px solid var(--green-light);
+    color: var(--green-deep);
+    padding: 20px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .success-msg.show { display: block; }
+
+  /* Footer */
+  footer {
+    background: var(--charcoal);
+    color: #c9bfae;
+    padding: 50px 24px 30px;
+    text-align: center;
+    font-size: 0.85rem;
+  }
+  footer .footer-inner { max-width: 1000px; margin: 0 auto; }
+  footer p { margin: 6px 0; }
+  footer .small { font-size: 0.75rem; color: #8a8170; margin-top: 20px; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .nav { display: none; }
+    section { padding: 60px 20px; }
+    .story-grid { grid-template-columns: 1fr; gap: 40px; }
+    .three-cards { grid-template-columns: 1fr; }
+    .step-list { grid-template-columns: repeat(2, 1fr); }
+    .progress-wrap {
+      grid-template-columns: 1fr 1fr;
+      margin: -30px 16px 0;
+      padding: 20px;
+    }
+    .form-row { grid-template-columns: 1fr; }
+    .form-wrap { padding: 32px 24px; }
+    .plan-card { padding: 36px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      ウバメガシの森プロジェクト
+      <small>HIDAKAGAWA UBAMEGASHI FOREST</small>
+    </div>
+    <nav class="nav">
+      <a href="#story">想い</a>
+      <a href="#about">プロジェクト</a>
+      <a href="#plan">支援プラン</a>
+      <a href="#process">流れ</a>
+      <a href="#form">お申し込み</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg" role="img" aria-label="紀州備長炭の窯と職人"></div>
+  <div class="hero-content">
+    <span class="badge">和歌山県日高川町 × ふるさと納税型クラウドファンディング</span>
+    <h1>
+      耕作放棄地を、<span class="em">ウバメガシの里</span>に。<br>
+      50年後の後世へ、紀州の山を手渡す。
+    </h1>
+    <p class="lead">
+      日高川町の耕作放棄地 10ヘクタール を、備長炭の原木ウバメガシの森へ。<br>
+      あなたの一口が、半世紀先の里山をつくります。
+    </p>
+    <div class="cta-row">
+      <a href="#form" class="btn btn-primary">いますぐ支援する</a>
+      <a href="#story" class="btn btn-ghost">プロジェクトを知る</a>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-bar-wrap">
+    <div class="progress-bar"><div></div></div>
+  </div>
+  <div class="stat">
+    <div class="num">4,210,000<small>円</small></div>
+    <div class="label">現在の支援総額</div>
+  </div>
+  <div class="stat">
+    <div class="num">42<small>名</small></div>
+    <div class="label">支援者数</div>
+  </div>
+  <div class="stat">
+    <div class="num">63<small>日</small></div>
+    <div class="label">残り期間</div>
+  </div>
+  <div class="stat">
+    <div class="num">42<small>%</small></div>
+    <div class="label">目標 1,000万円／10ha</div>
+  </div>
+</div>
+
+<!-- STORY -->
+<section class="story" id="story">
+  <div class="container">
+    <div class="section-title">
+      <span class="en">OUR STORY</span>
+      <span class="ja">耕作放棄地から、ウバメガシの里へ</span>
+    </div>
+    <p class="section-lead">日高川町から始まる、50年先の山づくり。</p>
+
+    <div class="story-grid">
+      <div class="story-image" aria-hidden="true">
+        <div class="story-overlay">
+          <div class="story-overlay-num">10<small>ha</small></div>
+          <div class="story-overlay-label">耕作放棄地を森へ</div>
+          <div class="story-overlay-sub">50年先のウバメガシの里</div>
+        </div>
+      </div>
+      <div class="story-text">
+        <h3>放棄された田畑を、紀州の宝の森に。</h3>
+        <p>
+          いま、日高川町には耕作されなくなった田畑が広がっています。
+          一方、和歌山が誇る最高級木炭「紀州備長炭」の原木 <strong>ウバメガシ</strong> は、
+          山林の荒廃と高齢化により深刻な不足に陥っています。
+        </p>
+        <p>
+          このプロジェクトは、町内の <strong>耕作放棄地10ヘクタール</strong> を
+          ウバメガシの森へと再生し、半世紀先の後世に<strong>「ウバメガシの里」</strong>として
+          手渡すための取り組みです。ウバメガシは成長に時間のかかる樹種です。
+          だからこそ、今日の一本が、50年後の景色をつくります。
+        </p>
+        <p>
+          あなたの一口の支援が、苗木となり、森となり、いつか炭となって
+          子や孫の食卓を照らします。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BRIDGE -->
+<section class="bridge" aria-label="苗木から、炭へ。">
+  <div class="bridge-inner">
+    <h2>
+      一本の苗木が、<br>
+      やがて<span class="em">紀州備長炭</span>になる。
+    </h2>
+    <p>
+      ウバメガシは、ゆっくりと、たしかに育ちます。<br>
+      今日植えた苗木は、子の代、孫の代の、誰かの食卓を照らす火になります。
+    </p>
+    <div class="bridge-caption">SEEDLING&nbsp;&nbsp;→&nbsp;&nbsp;CHARCOAL</div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="section-title">
+      <span class="en">3 REASONS</span>
+      <span class="ja">このプロジェクトの3つの特長</span>
+    </div>
+    <p class="section-lead">ふるさと納税型だから、応援するあなたにもメリットがあります。</p>
+
+    <div class="three-cards">
+      <div class="card">
+        <span class="icon">🌳</span>
+        <h4>耕作放棄地10haを森に再生</h4>
+        <p>日高川町の耕作放棄地に、地元林業家と協働でウバメガシを植え、50年スパンで管理育成します。植樹地マップで成長を可視化。</p>
+      </div>
+      <div class="card">
+        <span class="icon">🔥</span>
+        <h4>紀州備長炭が毎年届く</h4>
+        <p>支援者には毎年、地元職人による本場の紀州備長炭と日高川町の旬の特産品をお届けします。</p>
+      </div>
+      <div class="card">
+        <span class="icon">📜</span>
+        <h4>ふるさと納税で税控除</h4>
+        <p>日高川町への寄附となるため、所得税・住民税の控除対象。実質2,000円の自己負担で支援できます。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLAN -->
+<section class="plan" id="plan">
+  <div class="container">
+    <div class="section-title">
+      <span class="en">SUPPORT PLAN</span>
+      <span class="ja">ご支援プラン</span>
+    </div>
+    <p class="section-lead">1口10万円から。あなたの名前が、ウバメガシの里に刻まれます。</p>
+
+    <div class="plan-card">
+      <span class="ribbon">RECOMMENDED PLAN</span>
+      <div class="plan-amount">
+        <div class="price">100,000<small>円 / 1口</small></div>
+        <div class="unit">何口でもお申し込みいただけます</div>
+      </div>
+
+      <ul class="perk-list">
+        <li><strong>紀州備長炭（毎年）</strong>：地元窯元の本場備長炭 約2kgを毎年お届け（10年間継続）</li>
+        <li><strong>日高川町の特産品（毎年）</strong>：きのこ、梅干し、地酒、柑橘など、季節の品をお送りします</li>
+        <li><strong>植樹証明書</strong>：あなたのお名前入りの植樹証明書を発行</li>
+        <li><strong>植樹地マップへの記名</strong>：1口につき1本、植樹マップにお名前を記載</li>
+        <li><strong>年次レポート</strong>：森の成長を毎年写真とともにご報告</li>
+        <li><strong>植樹体験ツアーご招待</strong>：年1回、現地での植樹・里山体験にご招待</li>
+      </ul>
+
+      <div class="tax-note">
+        <strong>📌 税控除について</strong><br>
+        本プロジェクトは「和歌山県日高川町」へのふるさと納税（寄附）として受け付けます。
+        所得税・住民税からの控除が受けられ、給与収入700万円の方なら年間約10万円の寄附でも
+        実質自己負担2,000円となります（控除上限額は収入・家族構成により異なります）。
+        寄附金受領証明書は日高川町よりご自宅へ郵送いたします。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process" id="process">
+  <div class="container">
+    <div class="section-title">
+      <span class="en">PROCESS</span>
+      <span class="ja">お申し込みからお届けまで</span>
+    </div>
+    <p class="section-lead">かんたん4ステップ。</p>
+
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h5>フォームから申込</h5>
+        <p>下記フォームに必要事項をご入力ください。</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h5>寄附金のお支払い</h5>
+        <p>クレジットカード／銀行振込にてお支払い。</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h5>受領証明書の発行</h5>
+        <p>日高川町より証明書を郵送（確定申告にご利用ください）。</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h5>毎年特典をお届け</h5>
+        <p>備長炭・特産品を毎年ご自宅へ。植樹レポートも同封。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FORM -->
+<section class="form-section" id="form">
+  <div class="container">
+    <div class="section-title">
+      <span class="en">APPLICATION</span>
+      <span class="ja">お申し込みフォーム</span>
+    </div>
+    <p class="section-lead">下記フォームよりお申し込みください。担当者より2営業日以内にご連絡いたします。</p>
+
+    <div class="form-wrap">
+      <div class="success-msg" id="successMsg">
+        ✅ お申し込みを受け付けました。ご入力のメールアドレス宛に確認メールをお送りします。
+      </div>
+
+      <form id="applyForm" onsubmit="return handleSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="lastName">姓<span class="req">必須</span></label>
+            <input type="text" id="lastName" name="lastName" required placeholder="山田">
+          </div>
+          <div class="form-group">
+            <label for="firstName">名<span class="req">必須</span></label>
+            <input type="text" id="firstName" name="firstName" required placeholder="太郎">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="lastNameKana">セイ<span class="req">必須</span></label>
+            <input type="text" id="lastNameKana" name="lastNameKana" required placeholder="ヤマダ">
+          </div>
+          <div class="form-group">
+            <label for="firstNameKana">メイ<span class="req">必須</span></label>
+            <input type="text" id="firstNameKana" name="firstNameKana" required placeholder="タロウ">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">メールアドレス<span class="req">必須</span></label>
+          <input type="email" id="email" name="email" required placeholder="example@example.com">
+        </div>
+
+        <div class="form-group">
+          <label for="tel">電話番号<span class="req">必須</span></label>
+          <input type="tel" id="tel" name="tel" required placeholder="090-0000-0000">
+        </div>
+
+        <div class="form-group">
+          <label for="zip">郵便番号<span class="req">必須</span></label>
+          <input type="text" id="zip" name="zip" required placeholder="649-1324" style="max-width:200px;">
+        </div>
+
+        <div class="form-group">
+          <label for="address">ご住所（特典送付先）<span class="req">必須</span></label>
+          <input type="text" id="address" name="address" required placeholder="和歌山県日高郡日高川町○○○○">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="units">寄附口数<span class="req">必須</span></label>
+            <select id="units" name="units" required onchange="updateTotal()">
+              <option value="1">1口（100,000円）</option>
+              <option value="2">2口（200,000円）</option>
+              <option value="3">3口（300,000円）</option>
+              <option value="5">5口（500,000円）</option>
+              <option value="10">10口（1,000,000円）</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="payment">お支払い方法<span class="req">必須</span></label>
+            <select id="payment" name="payment" required>
+              <option value="credit">クレジットカード</option>
+              <option value="bank">銀行振込</option>
+              <option value="convenience">コンビニ決済</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="nameOnMap">植樹マップへの記名（任意）</label>
+          <input type="text" id="nameOnMap" name="nameOnMap" placeholder="お名前・ニックネーム・企業名など（空欄の場合は本名）">
+        </div>
+
+        <div class="form-group">
+          <label for="message">メッセージ・ご質問（任意）</label>
+          <textarea id="message" name="message" rows="4" placeholder="森への想い、ご質問などをご自由にお書きください"></textarea>
+        </div>
+
+        <div class="checkbox-wrap">
+          <input type="checkbox" id="agree" required>
+          <label for="agree" style="margin:0; font-weight:400;">
+            ふるさと納税の利用規約および日高川町の個人情報保護方針に同意します<span class="req">必須</span>
+          </label>
+        </div>
+
+        <div class="checkbox-wrap">
+          <input type="checkbox" id="onestop">
+          <label for="onestop" style="margin:0; font-weight:400;">
+            ワンストップ特例制度の申請書を希望する（給与所得者で確定申告不要な方）
+          </label>
+        </div>
+
+        <div class="form-submit">
+          <button type="submit" class="btn-submit">この内容で申し込む</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <p><strong>ウバメガシの森プロジェクト</strong></p>
+    <p>主催：和歌山県日高郡日高川町／企画運営：日高川町ふるさと納税推進室</p>
+    <p>〒649-1324 和歌山県日高郡日高川町土生160</p>
+    <p class="small">© Hidakagawa Town. All Rights Reserved.</p>
+  </div>
+</footer>
+
+<script>
+  function updateTotal() {
+    // 拡張用：口数変更時に合計を表示するなど
+  }
+  function handleSubmit(e) {
+    e.preventDefault();
+    const msg = document.getElementById('successMsg');
+    msg.classList.add('show');
+    msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    document.getElementById('applyForm').reset();
+    return false;
+  }
+</script>
+
+</body>
+</html>
