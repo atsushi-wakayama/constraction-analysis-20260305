@@ -387,6 +387,24 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;font-f
 #closeList:hover{background:var(--green-l)}
 
 @media (max-width:760px){
+  /* カードが小さいので、中身を絞って読めるようにする */
+  .card__body{padding:11px 11px 10px}
+  .card__sub{display:none}
+  .card__title{font-size:15px;line-height:1.4;margin:0 0 8px;text-shadow:0 1px 8px rgba(0,0,0,.5)}
+  .card__top{top:9px;left:9px;right:30px}
+  .card__top .tag{font-size:9px;padding:4px 7px;border-radius:999px}
+  .card__top .tag:nth-child(n+3){display:none}
+  .card__no{top:9px;right:10px;font-size:10px}
+  .card__seen{top:28px;right:9px;font-size:9px;padding:4px 8px}
+  .card__status{font-size:9px;padding:4px 9px}
+  .card__glyph{font-size:64px}
+  .cluster .clabel{font-size:13px;gap:6px}
+  .cluster .ccount{font-size:10px}
+  #stage.is-far .card__title{font-size:22px}
+  #stage.is-far .card__body{padding:12px}
+  #stage.is-far .cluster .clabel{font-size:44px}
+  #stage.is-far .cluster .ccount{font-size:30px}
+
   #brand{padding:20px 18px}
   #brand .logo{font-size:23px}
   #brand .lead{display:none}
@@ -396,9 +414,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;font-f
   #foot{display:none}
   #dock{padding:8px 10px 8px 16px;gap:8px;bottom:18px}
   #dock .label{display:none}
-  #hint{font-size:20px}
-  #seen{padding:64px 16px 0;gap:8px}
-  #seenBar{width:60px}
+  #seen{padding:22px 16px 0;gap:7px;font-size:10.5px}
+  #seenBar{width:54px;height:3px}
+  #seenReset{font-size:10px}
+  #hint{font-size:17px;padding:18px 26px 16px;white-space:nowrap}
+  #hint span{font-size:10px;letter-spacing:.14em}
   #scrollbar{top:var(--scrim-top,96px);bottom:96px;right:6px}
   .cluster{border-radius:20px}
   .cluster .clabel{top:14px;left:14px;font-size:15px}
@@ -521,6 +541,7 @@ const CARD = {
   clusterCols: 3,    // 分野の島の中に並べる列数（PC）
   // 横に並べる島の数は、画面サイズに合わせて自動で決まります
   mobileCols: 2,     // スマホでの列数
+  mobileRatio: 1.24, // スマホでのカードの縦横比
 };
 /* 画面端の余白（ヘッダーや下部ドックにカードが隠れない距離） */
 const EDGE = { top:150, bottom:150, side:40, topSP:96, bottomSP:96, sideSP:16 };
@@ -592,7 +613,7 @@ function buildBoard(keepPos){
   const CGAP   = narrow?24:44;                              // 島どうしの間隔
 
   CW = narrow ? Math.round((vw - mSide*2 - PAD.x*2 - gap*(gCols-1))/gCols) : CARD.width;
-  CH = Math.round(CW*CARD.ratio);
+  CH = Math.round(CW*(narrow?CARD.mobileRatio:CARD.ratio));
 
   // 島の寸法をあらかじめ計算し、画面にいちばんきれいに収まる段組みを選ぶ
   const dims = groups.map(g=>{
@@ -612,14 +633,11 @@ function buildBoard(keepPos){
     });
     return {W, H: Math.max(0, y-CGAP)};
   };
-  let perRow = 1;
-  if(!narrow){
-    let best = -1;
-    for(let per=1; per<=dims.length; per++){
-      const {W,H} = measure(per);
-      const fit = Math.min((vw-mSide*2)/W, availH/H);   // 全体表示したときの大きさ
-      if(fit > best){ best = fit; perRow = per; }
-    }
+  let perRow = 1, best = -1;
+  for(let per=1; per<=dims.length; per++){
+    const {W,H} = measure(per);
+    const fit = Math.min((vw-mSide*2)/W, availH/H);   // 全体表示したときの大きさ
+    if(fit > best){ best = fit; perRow = per; }
   }
 
   let cx=0, cy=0, rowH=0, n=0;
